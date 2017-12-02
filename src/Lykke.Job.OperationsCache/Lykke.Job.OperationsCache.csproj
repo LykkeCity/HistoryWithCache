@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AsyncEnumerator" Version="2.1.0" />
     <PackageReference Include="Lykke.Common" Version="3.0.0" />
     <PackageReference Include="Lykke.Common.ApiLibrary" Version="1.0.16" />
     <!-- #if azurequeuesub -->
