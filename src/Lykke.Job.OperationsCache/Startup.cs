@@ -58,7 +58,7 @@ namespace Lykke.Job.OperationsCache
 
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.RegisterModule(new JobModule(appSettings.CurrentValue.OperationsCacheJob, appSettings.Nested(x => x.OperationsCacheJob.Db), Log));
+                builder.RegisterModule(new JobModule(appSettings, Log));
 
                 builder.Populate(services);
 
@@ -82,7 +82,7 @@ namespace Lykke.Job.OperationsCache
                     app.UseDeveloperExceptionPage();
                 }
 
-                app.UseLykkeMiddleware("OperationsCache", ex => new ErrorResponse {ErrorMessage = "Technical problem"});
+                app.UseLykkeMiddleware("OperationsCache", ex => new ErrorResponse { ErrorMessage = "Technical problem" });
 
                 app.UseMvc();
                 app.UseSwagger(c =>
@@ -111,7 +111,7 @@ namespace Lykke.Job.OperationsCache
         {
             try
             {
-                // NOTE: Job not yet recieve and process IsAlive requests here
+                // NOTE: Job not yet receive and process IsAlive requests here
 
                 await ApplicationContainer.Resolve<IStartupManager>().StartAsync();
                 await Log.WriteMonitorAsync("", Program.EnvInfo, "Started");
@@ -127,7 +127,7 @@ namespace Lykke.Job.OperationsCache
         {
             try
             {
-                // NOTE: Job still can recieve and process IsAlive requests here, so take care about it if you add logic here.
+                // NOTE: Job still can receive and process IsAlive requests here, so take care about it if you add logic here.
 
                 await ApplicationContainer.Resolve<IShutdownManager>().StopAsync();
             }
@@ -146,12 +146,12 @@ namespace Lykke.Job.OperationsCache
             try
             {
                 // NOTE: Job can't recieve and process IsAlive requests here, so you can destroy all resources
-                
+
                 if (Log != null)
                 {
                     await Log.WriteMonitorAsync("", Program.EnvInfo, "Terminating");
                 }
-                
+
                 ApplicationContainer.Dispose();
             }
             catch (Exception ex)

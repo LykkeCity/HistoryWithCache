@@ -16,8 +16,9 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
         public MyPeriodicalHandler(
             ClientSessionsRepository clientSessionsRepository,
             IHistoryCache historyCache,
-            ILog log) :
-            base(nameof(MyPeriodicalHandler), (int)TimeSpan.FromSeconds(10).TotalMilliseconds, log)
+            ILog log,
+            TimeSpan expirationPeriod) :
+            base(nameof(MyPeriodicalHandler), (int)expirationPeriod.TotalMilliseconds, log)
         {
             _clientSessionsRepository = clientSessionsRepository ?? throw new ArgumentNullException(nameof(_clientSessionsRepository));
             _historyCache = historyCache ?? throw new ArgumentNullException(nameof(historyCache));

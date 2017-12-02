@@ -1,7 +1,9 @@
 ﻿using Autofac;
+using AzureStorage;
+using AzureStorage.Tables;
 using Common.Log;
 using Lykke.Job.OperationsCache.Core.Services;
-using Lykke.Job.OperationsCache.Core.Settings.JobSettings;
+using Lykke.Job.OperationsCache.Core.Settings;
 using Lykke.Job.OperationsCache.Services;
 using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
@@ -11,15 +13,13 @@ namespace Lykke.Job.OperationsCache.Modules
 {
     public class JobModule : Module
     {
-        private readonly OperationsCacheSettings _settings;
-        private readonly IReloadingManager<DbSettings> _dbSettingsManager;
+        private readonly IReloadingManager<AppSettings> _settings;
         private readonly ILog _log;
 
-        public JobModule(OperationsCacheSettings settings, IReloadingManager<DbSettings> dbSettingsManager, ILog log)
+        public JobModule(IReloadingManager<AppSettings> settings, ILog log)
         {
-            _settings = settings;
             _log = log;
-            _dbSettingsManager = dbSettingsManager;
+            _settings = settings;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -43,11 +43,22 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterType<InMemoryCache>()
                 .As<IHistoryCache>()
                 .SingleInstance();
+
+            builder.RegisterInstance(
+                AzureTableStorage<ClientSessionEntity>.Create(
+                    _settings.ConnectionString(x => x.SessionSettings.Sessions.ConnectionString), 
+                    _settings.CurrentValue.SessionSettings.Sessions.TableName, 
+                    _log))
+                .As<INoSQLTableStorage<ClientSessionEntity>>().SingleInstance();
+            builder.RegisterType<ClientSessionsRepository>()
+                .AsSelf()
+                .SingleInstance();
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
         {
             builder.RegisterType<MyPeriodicalHandler>()
+                .WithParameter(TypedParameter.From(_settings.CurrentValue.OperationsCacheJob.ExpirationPeriod))
                 .As<IStartable>()
                 .AutoActivate()
                 .SingleInstance();
