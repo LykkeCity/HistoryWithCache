@@ -13,12 +13,14 @@ namespace Lykke.Service.OperationsHistory.Services.InMemoryCache
     {
         private readonly ConcurrentDictionary<string, CacheModel> _storage;
         private readonly ILog _log;
-        private readonly int _valuesPerPage = 10;
+        private readonly OperationsHistoryReader _operationsHistoryReader;
+        private readonly int _valuesPerPage = 100; // todo: use settings
 
-        public InMemoryCache(ILog log)
+        public InMemoryCache(ILog log, OperationsHistoryReader operationsHistoryReader)
         {
             _storage = new ConcurrentDictionary<string, CacheModel>();
             _log = log;
+            _operationsHistoryReader = operationsHistoryReader ?? throw new ArgumentNullException(nameof(operationsHistoryReader));
         }
 
         public async Task<IEnumerable<HistoryEntry>> GetAllPagedAsync(string clientId, int page)
@@ -174,7 +176,7 @@ namespace Lykke.Service.OperationsHistory.Services.InMemoryCache
 
         private async Task<CacheModel> Load(string clientId)
         {
-            var records = new List<HistoryEntry>(); // todo: get records
+            var records = await _operationsHistoryReader.GetHistory(clientId);
 
             if (!records.Any())
                 return null;

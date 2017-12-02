@@ -8,6 +8,7 @@ using Lykke.Job.OperationsCache.Services;
 using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
 using Lykke.Service.OperationsHistory.Services.InMemoryCache;
+using Lykke.Service.OperationsRepository.Client;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -46,13 +47,19 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterInstance(
                 AzureTableStorage<ClientSessionEntity>.Create(
-                    _settings.ConnectionString(x => x.SessionSettings.Sessions.ConnectionString), 
-                    _settings.CurrentValue.SessionSettings.Sessions.TableName, 
+                    _settings.ConnectionString(x => x.SessionSettings.Sessions.ConnectionString),
+                    _settings.CurrentValue.SessionSettings.Sessions.TableName,
                     _log))
                 .As<INoSQLTableStorage<ClientSessionEntity>>().SingleInstance();
             builder.RegisterType<ClientSessionsRepository>()
                 .AsSelf()
                 .SingleInstance();
+            builder.RegisterType<OperationsHistoryReader>()
+                .AsSelf()
+                .SingleInstance();
+
+            builder.RegisterOperationsRepositoryClients(_settings.CurrentValue.OperationsRepositoryClient.ServiceUrl,
+                _log, _settings.CurrentValue.OperationsRepositoryClient.RequestTimeout);
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
