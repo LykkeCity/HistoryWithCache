@@ -12,7 +12,6 @@ using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
 using Lykke.Job.OperationsCache.Services.InMemoryCache;
 using Lykke.Job.OperationsCache.Services.OperationsHistory;
-//using Lykke.Service.OperationsRepository.Client;
 using Lykke.Service.OperationsRepository.AzureRepositories.CashOperations;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
 
@@ -81,28 +80,27 @@ namespace Lykke.Job.OperationsCache.Modules
 
         private void RegisterRepositories(ContainerBuilder builder)
         {
-            var connectionString = _settings.ConnectionString(x => x.OperationsRepositoryService.Db.RepoConnectionString);
             builder.RegisterInstance<ICashOperationsRepository>(
                 new CashOperationsRepository(
-                    AzureTableStorage<CashInOutOperationEntity>.Create(connectionString, "OperationsCash", _log),
-                    AzureTableStorage<AzureIndex>.Create(connectionString, "OperationsCash", _log)));
+                    AzureTableStorage<CashInOutOperationEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOperationsConnString), "OperationsCash", _log),
+                    AzureTableStorage<AzureIndex>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOperationsConnString), "OperationsCash", _log)));
 
             builder.RegisterInstance<IClientTradesRepository>(
                 new ClientTradesRepository(
-                    AzureTableStorage<ClientTradeEntity>.Create(connectionString, "Trades", _log)));
+                    AzureTableStorage<ClientTradeEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientTradesConnString), "Trades", _log)));
 
             builder.RegisterInstance<ITransferEventsRepository>(
                 new TransferEventsRepository(
-                    AzureTableStorage<TransferEventEntity>.Create(connectionString, "Transfers", _log),
-                    AzureTableStorage<AzureIndex>.Create(connectionString, "Transfers", _log)));
+                    AzureTableStorage<TransferEventEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.TransferConnString), "Transfers", _log),
+                    AzureTableStorage<AzureIndex>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.TransferConnString), "Transfers", _log)));
 
             builder.RegisterInstance<ICashOutAttemptRepository>(
                 new CashOutAttemptRepository(
-                    AzureTableStorage<CashOutAttemptEntity>.Create(connectionString, "CashOutAttempt", _log)));
+                    AzureTableStorage<CashOutAttemptEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOutAttemptConnString), "CashOutAttempt", _log)));
 
             builder.RegisterInstance<ILimitTradeEventsRepository>(
                 new LimitTradeEventsRepository(
-                    AzureTableStorage<LimitTradeEventEntity>.Create(connectionString, "LimitTradeEvents", _log)));
+                    AzureTableStorage<LimitTradeEventEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.LimitTradesConnString), "LimitTradeEvents", _log)));
         }
     }
 }
