@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Service.OperationsRepository.Client.Abstractions.CashOperations;
 
-namespace Lykke.Job.OperationsCache.Services
+namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
-    public class OperationsHistoryReader
+    public class OperationsHistoryClientReader : IOperationsHistoryReader
     {
         private readonly ICashOperationsRepositoryClient _cashOperationsRepositoryClient;
         private readonly ICashOutAttemptOperationsRepositoryClient _cashOutAttemptOperationsRepositoryClient;
         private readonly ITradeOperationsRepositoryClient _tradeOperationsRepositoryClient;
         private readonly ITransferOperationsRepositoryClient _transferOperationsRepositoryClient;
 
-        public OperationsHistoryReader(
+        public OperationsHistoryClientReader(
             ICashOperationsRepositoryClient cashOperationsRepositoryClient,
             ICashOutAttemptOperationsRepositoryClient cashOutAttemptOperationsRepositoryClient,
             ITradeOperationsRepositoryClient tradeOperationsRepositoryClient,
@@ -28,10 +28,10 @@ namespace Lykke.Job.OperationsCache.Services
         public async Task<List<HistoryEntry>> GetHistory(string clientId)
         {
             var records = new List<HistoryEntry>();
-            records.AddRange((await _cashOperationsRepositoryClient.GetAsync(clientId)).Select(Mapper.MapFrom));
-            records.AddRange((await _cashOutAttemptOperationsRepositoryClient.GetRequestsAsync(clientId)).Select(Mapper.MapFrom));
-            records.AddRange((await _tradeOperationsRepositoryClient.GetAsync(clientId)).Select(Mapper.MapFrom));
-            records.AddRange((await _transferOperationsRepositoryClient.GetAsync(clientId)).Select(Mapper.MapFrom));
+            records.AddRange((await _cashOperationsRepositoryClient.GetAsync(clientId)).Select(ClientMapper.MapFrom));
+            records.AddRange((await _cashOutAttemptOperationsRepositoryClient.GetRequestsAsync(clientId)).Select(ClientMapper.MapFrom));
+            records.AddRange((await _tradeOperationsRepositoryClient.GetAsync(clientId)).Select(ClientMapper.MapFrom));
+            records.AddRange((await _transferOperationsRepositoryClient.GetAsync(clientId)).Select(ClientMapper.MapFrom));
             return records;
         }
     }

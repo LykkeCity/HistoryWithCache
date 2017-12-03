@@ -5,18 +5,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Log;
 using Lykke.Job.OperationsCache.Models;
-using Lykke.Job.OperationsCache.Services;
+using Lykke.Job.OperationsCache.Services.OperationsHistory;
 
-namespace Lykke.Service.OperationsHistory.Services.InMemoryCache
+namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 {
     public class InMemoryCache: IHistoryCache
     {
         private readonly ConcurrentDictionary<string, CacheModel> _storage;
         private readonly ILog _log;
-        private readonly OperationsHistoryReader _operationsHistoryReader;
+        private readonly IOperationsHistoryReader _operationsHistoryReader;
         private readonly int _valuesPerPage = 100; // todo: use settings
 
-        public InMemoryCache(ILog log, OperationsHistoryReader operationsHistoryReader)
+        public InMemoryCache(ILog log, IOperationsHistoryReader operationsHistoryReader)
         {
             _storage = new ConcurrentDictionary<string, CacheModel>();
             _log = log;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Lykke.Job.OperationsCache.Models;
 
-namespace Lykke.Service.OperationsHistory.Services.InMemoryCache
+namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 {
     public class CacheModel
     {

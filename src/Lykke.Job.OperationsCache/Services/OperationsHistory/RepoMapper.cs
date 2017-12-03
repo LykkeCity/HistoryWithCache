@@ -1,12 +1,12 @@
 ﻿using Lykke.Job.OperationsCache.Models;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
 using Newtonsoft.Json;
-using Lykke.Service.OperationsRepository.AutorestClient.Models;
 
-namespace Lykke.Job.OperationsCache.Services
+namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
-    public static class Mapper
+    public static class RepoMapper
     {
-        public static HistoryEntry MapFrom(CashInOutOperation source)
+        public static HistoryEntry MapFrom(ICashInOutOperation source)
         {
             return new HistoryEntry
             {
@@ -20,7 +20,7 @@ namespace Lykke.Job.OperationsCache.Services
             };
         }
 
-        public static HistoryEntry MapFrom(CashOutAttemptEntity source)
+        public static HistoryEntry MapFrom(ICashOutRequest source)
         {
             return new HistoryEntry
             {
@@ -34,7 +34,7 @@ namespace Lykke.Job.OperationsCache.Services
             };
         }
 
-        public static HistoryEntry MapFrom(ClientTrade source)
+        public static HistoryEntry MapFrom(IClientTrade source)
         {
             return new HistoryEntry
             {
@@ -48,7 +48,7 @@ namespace Lykke.Job.OperationsCache.Services
             };
         }
 
-        public static HistoryEntry MapFrom(TransferEvent source)
+        public static HistoryEntry MapFrom(ITransferEvent source)
         {
             return new HistoryEntry
             {

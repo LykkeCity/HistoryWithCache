@@ -1,14 +1,18 @@
 ﻿using Autofac;
 using AzureStorage;
 using AzureStorage.Tables;
+using AzureStorage.Tables.Templates.Index;
 using Common.Log;
 using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Job.OperationsCache.Core.Settings;
 using Lykke.Job.OperationsCache.Services;
 using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
-using Lykke.Service.OperationsHistory.Services.InMemoryCache;
-using Lykke.Service.OperationsRepository.Client;
+using Lykke.Job.OperationsCache.Services.InMemoryCache;
+using Lykke.Job.OperationsCache.Services.OperationsHistory;
+//using Lykke.Service.OperationsRepository.Client;
+using Lykke.Service.OperationsRepository.AzureRepositories.CashOperations;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -54,12 +58,15 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterType<ClientSessionsRepository>()
                 .AsSelf()
                 .SingleInstance();
-            builder.RegisterType<OperationsHistoryReader>()
-                .AsSelf()
+
+            //builder.RegisterType<OperationsHistoryClientReader>()
+            builder.RegisterType<OperationsHistoryRepoReader>()
+                .As<IOperationsHistoryReader>()
                 .SingleInstance();
 
-            builder.RegisterOperationsRepositoryClients(_settings.CurrentValue.OperationsRepositoryClient.ServiceUrl,
-                _log, _settings.CurrentValue.OperationsRepositoryClient.RequestTimeout);
+            //builder.RegisterOperationsRepositoryClients(_settings.CurrentValue.OperationsRepositoryClient.ServiceUrl,
+            //    _log, _settings.CurrentValue.OperationsRepositoryClient.RequestTimeout);
+            RegisterRepositories(builder);
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
@@ -71,5 +78,26 @@ namespace Lykke.Job.OperationsCache.Modules
                 .SingleInstance();
         }
 
+        private void RegisterRepositories(ContainerBuilder builder)
+        {
+            var connectionString = _settings.ConnectionString(x => x.OperationsRepositoryService.Db.RepoConnectionString);
+            builder.RegisterInstance<ICashOperationsRepository>(
+                new CashOperationsRepository(
+                    AzureTableStorage<CashInOutOperationEntity>.Create(connectionString, "OperationsCash", _log),
+                    AzureTableStorage<AzureIndex>.Create(connectionString, "OperationsCash", _log)));
+
+            builder.RegisterInstance<IClientTradesRepository>(
+                new ClientTradesRepository(
+                    AzureTableStorage<ClientTradeEntity>.Create(connectionString, "Trades", _log)));
+
+            builder.RegisterInstance<ITransferEventsRepository>(
+                new TransferEventsRepository(
+                    AzureTableStorage<TransferEventEntity>.Create(connectionString, "Transfers", _log),
+                    AzureTableStorage<AzureIndex>.Create(connectionString, "Transfers", _log)));
+
+            builder.RegisterInstance<ICashOutAttemptRepository>(
+                new CashOutAttemptRepository(
+                    AzureTableStorage<CashOutAttemptEntity>.Create(connectionString, "CashOutAttempt", _log)));
+        }
     }
 }
