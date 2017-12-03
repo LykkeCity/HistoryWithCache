@@ -48,6 +48,7 @@ namespace Lykke.Job.OperationsCache.Modules
 
 
             builder.RegisterType<InMemoryCache>()
+                .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
                 .As<IHistoryCache>()
                 .SingleInstance();
 
