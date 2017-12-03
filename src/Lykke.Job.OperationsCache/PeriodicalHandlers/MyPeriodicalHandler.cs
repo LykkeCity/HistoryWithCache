@@ -44,13 +44,13 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
                 var timestamp = DateTime.UtcNow;
                 var clientsIds = (await _clientSessionsRepository.GetClientsIds()).Where(id => !_excludeList.Contains(id)).ToList();
 
-                await clientsIds.ParallelForEachAsync(async clientId =>
+                await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processing {clientsIds.Count} active clients.");
+                foreach (var clientId in clientsIds)
                 {
                     await _historyCache.WarmUp(clientId, true).ConfigureAwait(false);
-                }).ConfigureAwait(false);
+                }
 
-                var memSize = Process.GetCurrentProcess().PrivateMemorySize64 >> 20;
-                await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processed {clientsIds.Count} active clients in {(DateTime.UtcNow - timestamp).TotalSeconds} seconds. PrivateMemorySize: {memSize} Mb");
+                await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processed in {(DateTime.UtcNow - timestamp).TotalSeconds} seconds.");
             }
             finally
             {
