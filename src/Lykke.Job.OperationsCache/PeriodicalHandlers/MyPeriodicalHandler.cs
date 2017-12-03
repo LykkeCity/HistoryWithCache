@@ -40,7 +40,7 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
                 var clientsIds = (await _clientSessionsRepository.GetClientsIds()).ToList();
                 await clientsIds.ParallelForEachAsync(async clientId =>
                 {
-                    await _historyCache.WarmUp(clientId).ConfigureAwait(false);
+                    await _historyCache.WarmUp(clientId, true).ConfigureAwait(false);
                 }).ConfigureAwait(false);
 
                 await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processed {clientsIds.Count} active clients in {(DateTime.UtcNow - timestamp).TotalSeconds} seconds");

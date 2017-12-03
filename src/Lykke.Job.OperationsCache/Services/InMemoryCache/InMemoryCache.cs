@@ -9,7 +9,7 @@ using Lykke.Job.OperationsCache.Services.OperationsHistory;
 
 namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 {
-    public class InMemoryCache: IHistoryCache
+    public class InMemoryCache : IHistoryCache
     {
         private readonly ConcurrentDictionary<string, CacheModel> _storage;
         private readonly ILog _log;
@@ -26,7 +26,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         public async Task<IEnumerable<HistoryEntry>> GetAllPagedAsync(string clientId, int page)
         {
             return await InternalGetAllAsync(
-                clientId, 
+                clientId,
                 GetTopValueForPagedApi(),
                 GetSkipValueForPagedApi(page));
         }
@@ -39,10 +39,10 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         public async Task<IEnumerable<HistoryEntry>> GetAllPagedAsync(string clientId, string assetId, string operationType, int page)
         {
             return await InternalGetAllAsync(
-                clientId, 
-                assetId, 
-                operationType, 
-                GetTopValueForPagedApi(), 
+                clientId,
+                assetId,
+                operationType,
+                GetTopValueForPagedApi(),
                 GetSkipValueForPagedApi(page));
         }
 
@@ -54,8 +54,8 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         public async Task<IEnumerable<HistoryEntry>> GetAllByOpTypePagedAsync(string clientId, string operationType, int page)
         {
             return await InternalGetAllByOpTypeAsync(
-                clientId, 
-                operationType, 
+                clientId,
+                operationType,
                 GetTopValueForPagedApi(),
                 GetSkipValueForPagedApi(page));
         }
@@ -68,8 +68,8 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         public async Task<IEnumerable<HistoryEntry>> GetAllByAssetPagedAsync(string clientId, string assetId, int page)
         {
             return await InternalGetAllByAssetAsync(
-                clientId, 
-                assetId, 
+                clientId,
+                assetId,
                 GetTopValueForPagedApi(),
                 GetSkipValueForPagedApi(page));
         }
@@ -166,9 +166,9 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
                 "No cache for clientId, new item will be ignored");
         }
 
-        public async Task WarmUp(string clientId)
+        public async Task WarmUp(string clientId, bool force = false)
         {
-            if (!_storage.ContainsKey(clientId))
+            if (force || !_storage.ContainsKey(clientId))
             {
                 await Load(clientId);
             }
@@ -177,9 +177,6 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         private async Task<CacheModel> Load(string clientId)
         {
             var records = await _operationsHistoryReader.GetHistory(clientId);
-
-            if (!records.Any())
-                return null;
 
             var cacheModel = new CacheModel
             {
