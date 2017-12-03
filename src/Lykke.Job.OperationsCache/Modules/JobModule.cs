@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using AzureRepositories.CashOperations;
 using AzureStorage;
 using AzureStorage.Tables;
 using AzureStorage.Tables.Templates.Index;
 using Common.Log;
+using Core.CashOperations;
 using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Job.OperationsCache.Core.Settings;
 using Lykke.Job.OperationsCache.Services;
@@ -95,6 +97,10 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterInstance<ICashOutAttemptRepository>(
                 new CashOutAttemptRepository(
                     AzureTableStorage<CashOutAttemptEntity>.Create(connectionString, "CashOutAttempt", _log)));
+
+            builder.RegisterInstance<ILimitTradeEventsRepository>(
+                new LimitTradeEventsRepository(
+                    AzureTableStorage<LimitTradeEventEntity>.Create(connectionString, "LimitTradeEvents", _log)));
         }
     }
 }
