@@ -183,7 +183,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
                 Records = new ConcurrentDictionary<string, HistoryEntry>(
                     records
                         .OrderBy(r => r.DateTime)
-                        .Select(x => new KeyValuePair<string, HistoryEntry>(x.Id, x)))
+                        .Select(x => new KeyValuePair<string, HistoryEntry>(x.Id ?? Guid.NewGuid().ToString(), x)))
             };
 
             return _storage.AddOrUpdate(clientId, cacheModel, (key, oldValue) => cacheModel);
