@@ -1,4 +1,5 @@
-﻿using Lykke.Job.OperationsCache.Models;
+﻿using Core.CashOperations;
+using Lykke.Job.OperationsCache.Models;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
 using Newtonsoft.Json;
 
@@ -58,6 +59,20 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 Amount = source.Amount,
                 Currency = source.AssetId,
                 OpType = "TransferEvent",
+                CustomData = JsonConvert.SerializeObject(source)
+            };
+        }
+
+        public static HistoryEntry MapFrom(ILimitTradeEvent source)
+        {
+            return new HistoryEntry
+            {
+                Id = source.Id,
+                ClientId = source.ClientId,
+                DateTime = source.CreatedDt,
+                Amount = source.Volume,
+                Currency = source.AssetId,
+                OpType = "LimitTradeEvent",
                 CustomData = JsonConvert.SerializeObject(source)
             };
         }

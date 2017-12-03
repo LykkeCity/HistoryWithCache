@@ -13,4 +13,8 @@
     <ProjectReference Include="..\..\contract\Lykke.Job.OperationsCache.Contract\Lykke.Job.OperationsCache.Contract.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Offchain\" />
+  </ItemGroup>
+
 </Project>
