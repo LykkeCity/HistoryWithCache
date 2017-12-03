@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Async;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
@@ -43,7 +44,8 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
                     await _historyCache.WarmUp(clientId, true).ConfigureAwait(false);
                 }).ConfigureAwait(false);
 
-                await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processed {clientsIds.Count} active clients in {(DateTime.UtcNow - timestamp).TotalSeconds} seconds");
+                var memSize = Process.GetCurrentProcess().PrivateMemorySize64 >> 20;
+                await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processed {clientsIds.Count} active clients in {(DateTime.UtcNow - timestamp).TotalSeconds} seconds. PrivateMemorySize: {memSize} Mb");
             }
             finally
             {

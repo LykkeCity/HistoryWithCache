@@ -59,13 +59,10 @@ namespace Lykke.Job.OperationsCache.Modules
                 .AsSelf()
                 .SingleInstance();
 
-            //builder.RegisterType<OperationsHistoryClientReader>()
             builder.RegisterType<OperationsHistoryRepoReader>()
                 .As<IOperationsHistoryReader>()
                 .SingleInstance();
 
-            //builder.RegisterOperationsRepositoryClients(_settings.CurrentValue.OperationsRepositoryClient.ServiceUrl,
-            //    _log, _settings.CurrentValue.OperationsRepositoryClient.RequestTimeout);
             RegisterRepositories(builder);
         }
 

@@ -8,7 +8,6 @@ namespace Lykke.Job.OperationsCache.Core.Settings
         public OperationsCacheSettings OperationsCacheJob { get; set; }
         public SlackNotificationsSettings SlackNotifications { get; set; }
         public SessionServiceSettings SessionSettings { get; set; }
-        //public OperationsRepositoryClientSettings OperationsRepositoryClient { get; set; }
         public OperationsRepositorySettings OperationsRepositoryService { get; set; }
     }
 
@@ -23,12 +22,6 @@ namespace Lykke.Job.OperationsCache.Core.Settings
 
         public string TableName { get; set; }
     }
-
-    //public class OperationsRepositoryClientSettings
-    //{
-    //    public string ServiceUrl { get; set; }
-    //    public int RequestTimeout { get; set; }
-    //}
 
     public class OperationsRepositorySettings
     {
