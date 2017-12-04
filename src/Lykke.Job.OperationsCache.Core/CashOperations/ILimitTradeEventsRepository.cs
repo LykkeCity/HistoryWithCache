@@ -8,7 +8,7 @@ namespace Core.CashOperations
     public interface ILimitTradeEvent
     {
         string ClientId { get; }
-        string Id { get; set; }
+        string Id { get; }
         string OrderId { get; }
         DateTime CreatedDt { get; }
         OrderType OrderType { get; }

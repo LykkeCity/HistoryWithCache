@@ -19,7 +19,7 @@ namespace AzureRepositories.CashOperations
         public OrderStatus Status { get; set; }
         public bool IsHidden { get; set; }
         public string ClientId { get; set; }
-        public string Id { get; set; }
+        public string Id => RowKey;
         public string OrderId { get; set; }
 
         public static string GeneratePartitionKey(string clientId)
