@@ -14,6 +14,8 @@ using Lykke.Job.OperationsCache.Services.InMemoryCache;
 using Lykke.Job.OperationsCache.Services.OperationsHistory;
 using Lykke.Service.OperationsRepository.AzureRepositories.CashOperations;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Core.BitCoin;
+using AzureRepositories.Bitcoin;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -101,6 +103,11 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterInstance<ILimitTradeEventsRepository>(
                 new LimitTradeEventsRepository(
                     AzureTableStorage<LimitTradeEventEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.LimitTradesConnString), "LimitTradeEvents", _log)));
+
+            builder.RegisterInstance<IWalletCredentialsRepository>(
+                new WalletCredentialsRepository(
+                    AzureTableStorage<WalletCredentialsEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientPersonalInfoConnString),
+                        "WalletCredentials", _log)));
         }
     }
 }
