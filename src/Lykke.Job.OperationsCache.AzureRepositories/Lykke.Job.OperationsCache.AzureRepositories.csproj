@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Lykke.Job.OperationsCache.Core\Lykke.Job.OperationsCache.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Bitcoin\" />
+  </ItemGroup>
+
 </Project>

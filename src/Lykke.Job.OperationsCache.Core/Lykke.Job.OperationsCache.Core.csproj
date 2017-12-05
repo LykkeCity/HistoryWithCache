@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Lykke.Common" Version="3.0.0" />
+    <PackageReference Include="Lykke.Service.Assets.Client" Version="2.1.0.26-beta" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Bitcoin\" />
     <Folder Include="Offchain\" />
   </ItemGroup>
 
