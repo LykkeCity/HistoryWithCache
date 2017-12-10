@@ -9,5 +9,6 @@
         public string CashOutAttemptConnString { get; set; }
         public string LimitTradesConnString { get; set; }
         public string ClientPersonalInfoConnString { get; set; }
+        public string MarketOrdersConnString { get; set; }
     }
 }
