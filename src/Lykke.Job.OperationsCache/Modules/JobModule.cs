@@ -16,6 +16,14 @@ using Lykke.Service.OperationsRepository.AzureRepositories.CashOperations;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
 using Core.BitCoin;
 using AzureRepositories.Bitcoin;
+using Core.Exchange;
+using AzureRepositories.Exchange;
+using Lykke.Service.Assets.Client;
+using System;
+using Core;
+using System.Linq;
+using Common;
+using Lykke.Service.Assets.Client.Models;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -59,6 +67,7 @@ namespace Lykke.Job.OperationsCache.Modules
                     _settings.CurrentValue.SessionSettings.Sessions.TableName,
                     _log))
                 .As<INoSQLTableStorage<ClientSessionEntity>>().SingleInstance();
+
             builder.RegisterType<ClientSessionsRepository>()
                 .AsSelf()
                 .SingleInstance();
@@ -66,6 +75,11 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterType<OperationsHistoryRepoReader>()
                 .As<IOperationsHistoryReader>()
                 .SingleInstance();
+
+            builder.RegisterInstance<IAssetsService>(
+                new AssetsService(new Uri(_settings.CurrentValue.AssetsServiceClient.ServiceUrl)));
+
+            RegisterCachedDicts(builder);
 
             RegisterRepositories(builder);
         }
@@ -108,6 +122,47 @@ namespace Lykke.Job.OperationsCache.Modules
                 new WalletCredentialsRepository(
                     AzureTableStorage<WalletCredentialsEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientPersonalInfoConnString),
                         "WalletCredentials", _log)));
+
+            builder.RegisterInstance<IMarketOrdersRepository>(
+                new MarketOrdersRepository(AzureTableStorage<MarketOrderEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.MarketOrdersConnString),
+                    "MarketOrders", _log)));
+        }
+
+        private void RegisterCachedDicts(ContainerBuilder builder)
+        {
+            builder.Register(x =>
+            {
+                var assetsService = x.Resolve<IComponentContext>().Resolve<IAssetsService>();
+
+                return new CachedAssetsDictionary
+                (
+                    async () => (await assetsService.AssetGetAllAsync(includeNonTradable: true)).ToDictionary(itm => itm.Id)
+                );
+
+            }).SingleInstance();
+
+            builder.Register(x =>
+            {
+                var assetsService = x.Resolve<IComponentContext>().Resolve<IAssetsService>();
+
+                return new CachedTradableAssetsDictionary
+                (
+                    async () => (await assetsService.AssetGetAllAsync(includeNonTradable: false)).ToDictionary(itm => itm.Id)
+                );
+
+            }).SingleInstance();
+
+            builder.Register(x =>
+            {
+
+                var assetsService = x.Resolve<IComponentContext>().Resolve<IAssetsService>();
+
+                return new CachedDataDictionary<string, AssetPair>
+                (
+                    async () => (await assetsService.AssetPairGetAllAsync()).ToDictionary(itm => itm.Id)
+                );
+
+            }).SingleInstance();
         }
     }
 }
