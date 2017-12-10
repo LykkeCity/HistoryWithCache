@@ -26,6 +26,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         private readonly CachedDataDictionary<string, AssetPair> _assetPairs;
         private CachedTradableAssetsDictionary _tradableAssets;
 
+        private IDictionary<string, AssetPair> _assetPairValues;
+        private IDictionary<string, Asset> _assetValues;
+
         public OperationsHistoryRepoReader(
             ICashOperationsRepository cashOperationsRepository,
             IClientTradesRepository clientTradesRepository,
@@ -54,28 +57,60 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             var walletCreds = await _walletCredentialsRepository.GetAsync(clientId);
             var multisig = walletCreds?.MultiSig;
 
+            HistoryEntry[] cashOperations = null;
+            HistoryEntry[] tradeOperations = null;
+            HistoryEntry[] transferOperations = null;
+            HistoryEntry[] cashOutAttemptOperations = null;
+            HistoryEntry[] limitTradeEvents = null;
+            Dictionary<string, IMarketOrder> marketOrders = null;
+
+            Task<IEnumerable<ICashInOutOperation>> cashOperationsRead;
+            Task<IEnumerable<IClientTrade>> tradeOperationsRead;
+            Task<IEnumerable<ITransferEvent>> transferOperationsRead;
+            Task<IEnumerable<ICashOutRequest>> cashOutAttemptsRead;
+            Task<IEnumerable<ILimitTradeEvent>> limiTradeEventsRead;
+            Task<IEnumerable<IMarketOrder>> marketOrdersRead;
+
             if (!string.IsNullOrWhiteSpace(multisig))
             {
-                records.AddRange((await _cashOperationsRepository.GetByMultisigAsync(multisig)).Select(RepoMapper.MapFrom));
-                records.AddRange((await _clientTradesRepository.GetByMultisigAsync(multisig)).Select(RepoMapper.MapFrom));
-                records.AddRange((await _transferEventsRepository.GetByMultisigAsync(multisig)).Select(RepoMapper.MapFrom));
+                cashOperationsRead = _cashOperationsRepository.GetByMultisigAsync(multisig);
+                tradeOperationsRead = _clientTradesRepository.GetByMultisigAsync(multisig);
+                transferOperationsRead = _transferEventsRepository.GetByMultisigAsync(multisig);
             }
             else
             {
-                records.AddRange((await _cashOperationsRepository.GetAsync(clientId)).Select(RepoMapper.MapFrom));
-                records.AddRange((await _clientTradesRepository.GetAsync(clientId)).Select(RepoMapper.MapFrom));
-                records.AddRange((await _transferEventsRepository.GetAsync(clientId)).Select(RepoMapper.MapFrom));
+                cashOperationsRead = _cashOperationsRepository.GetAsync(clientId);
+                tradeOperationsRead = _clientTradesRepository.GetAsync(clientId);
+                transferOperationsRead = _transferEventsRepository.GetAsync(clientId);
             }
 
-            records.AddRange((await _cashOutAttemptRepository.GetRequestsAsync(clientId)).Select(RepoMapper.MapFrom));
-            records.AddRange((await _limitTradeEventsRepository.GetEventsAsync(clientId)).Select(RepoMapper.MapFrom));
+            cashOutAttemptsRead = _cashOutAttemptRepository.GetRequestsAsync(clientId);
+            limiTradeEventsRead = _limitTradeEventsRepository.GetEventsAsync(clientId);
+            marketOrdersRead = _marketOrdersRepository.GetOrdersAsync(clientId);
 
-            await AddMarketOrdersInfo(records);
+            await Task.WhenAll(
+                cashOperationsRead.ContinueWith(t => cashOperations = t.Result.Select(RepoMapper.MapFrom).ToArray()),
+                tradeOperationsRead.ContinueWith(t => tradeOperations = t.Result.Select(RepoMapper.MapFrom).ToArray()),
+                transferOperationsRead.ContinueWith(t =>
+                    transferOperations = t.Result.Select(RepoMapper.MapFrom).ToArray()),
+                cashOutAttemptsRead.ContinueWith(t =>
+                    cashOutAttemptOperations = t.Result.Select(RepoMapper.MapFrom).ToArray()),
+                limiTradeEventsRead.ContinueWith(t => limitTradeEvents = t.Result.Select(RepoMapper.MapFrom).ToArray()),
+                marketOrdersRead.ContinueWith(t => marketOrders = t.Result.Where(x => !string.IsNullOrEmpty(x.Id)).ToDictionary(x => x.Id))
+            );
+
+            records.AddRange(cashOperations);
+            records.AddRange(tradeOperations);
+            records.AddRange(transferOperations);
+            records.AddRange(cashOutAttemptOperations);
+            records.AddRange(limitTradeEvents);
+
+            await AddMarketOrdersInfo(records, marketOrders);
 
             return records;
         }
 
-        private async Task AddMarketOrdersInfo(List<HistoryEntry> records)
+        private async Task AddMarketOrdersInfo(List<HistoryEntry> records, Dictionary<string, IMarketOrder> marketOrders)
         {
             var clientTrades = records
                 .Where(x => x.OpType == "ClientTrade");
@@ -94,13 +129,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 })
                 .Where(x => !string.IsNullOrWhiteSpace(x.MarketOrderId));
 
-            var assetPairs = await _assetPairs.GetDictionaryAsync();
+            var assetPairs = await GetAssetPairs();
 
-            var assets = await _tradableAssets.GetDictionaryAsync();
-
-            var orderIds = clientTradesWithOrderId.Select(x => x.MarketOrderId).Distinct();
-
-            var ordersDict = (await _marketOrdersRepository.GetOrdersAsync(orderIds)).ToDictionary(x => x.Id);
+            var assets = await GetAssets();
 
             foreach (var tradeWithOrderId in clientTradesWithOrderId)
             {
@@ -109,7 +140,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 if (asset == null)
                     continue;
 
-                if (ordersDict.TryGetValue(tradeWithOrderId.MarketOrderId, out var marketOrder))
+                if (marketOrders.TryGetValue(tradeWithOrderId.MarketOrderId, out var marketOrder))
                 {
                     var assetPair = assetPairs.ContainsKey(marketOrder.AssetPairId)
                         ? assetPairs[marketOrder.AssetPairId]
@@ -125,6 +156,26 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                     }
                 }
             }
+        }
+
+        private async Task<IDictionary<string, AssetPair>> GetAssetPairs()
+        {
+            if (_assetPairValues == null)
+            {
+                _assetPairValues = await _assetPairs.GetDictionaryAsync();
+            }
+
+            return _assetPairValues;
+        }
+
+        private async Task<IDictionary<string, Asset>> GetAssets()
+        {
+            if (_assetValues == null)
+            {
+                _assetValues = await _tradableAssets.GetDictionaryAsync();
+            }
+
+            return _assetValues;
         }
     }
 }
