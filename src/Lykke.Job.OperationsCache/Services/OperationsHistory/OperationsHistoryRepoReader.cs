@@ -9,6 +9,7 @@ using Core.BitCoin;
 using Core.Exchange;
 using Newtonsoft.Json.Linq;
 using Common;
+using Common.Log;
 using Lykke.Service.Assets.Client.Models;
 using Core;
 
@@ -24,7 +25,8 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         private readonly IWalletCredentialsRepository _walletCredentialsRepository;
         private readonly IMarketOrdersRepository _marketOrdersRepository;
         private readonly CachedDataDictionary<string, AssetPair> _assetPairs;
-        private CachedTradableAssetsDictionary _tradableAssets;
+        private readonly CachedTradableAssetsDictionary _tradableAssets;
+        private readonly ILog _log;
 
         private IDictionary<string, AssetPair> _assetPairValues;
         private IDictionary<string, Asset> _assetValues;
@@ -38,7 +40,8 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             IWalletCredentialsRepository walletCredentialsRepository,
             IMarketOrdersRepository marketOrdersRepository,
             CachedDataDictionary<string, AssetPair> assetPairs,
-            CachedTradableAssetsDictionary tradableAssets)
+            CachedTradableAssetsDictionary tradableAssets,
+            ILog log)
         {
             _cashOperationsRepository = cashOperationsRepository ?? throw new ArgumentNullException(nameof(cashOperationsRepository));
             _clientTradesRepository = clientTradesRepository ?? throw new ArgumentNullException(nameof(clientTradesRepository));
@@ -49,6 +52,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             _marketOrdersRepository = marketOrdersRepository ?? throw new ArgumentNullException(nameof(marketOrdersRepository));
             _assetPairs = assetPairs ?? throw new ArgumentNullException(nameof(assetPairs));
             _tradableAssets = tradableAssets ?? throw new ArgumentNullException(nameof(tradableAssets));
+            _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public async Task<List<HistoryEntry>> GetHistory(string clientId)
@@ -135,26 +139,46 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 
             foreach (var tradeWithOrderId in clientTradesWithOrderId)
             {
-                var asset = assets[tradeWithOrderId.Trade.Currency];
-
-                if (asset == null)
-                    continue;
-
-                if (marketOrders.TryGetValue(tradeWithOrderId.MarketOrderId, out var marketOrder))
+                try
                 {
-                    var assetPair = assetPairs.ContainsKey(marketOrder.AssetPairId)
-                        ? assetPairs[marketOrder.AssetPairId]
+                    var asset = assets.ContainsKey(tradeWithOrderId.Trade.Currency)
+                        ? assets[tradeWithOrderId.Trade.Currency]
                         : null;
 
-                    if (assetPair != null)
+                    if (asset == null)
                     {
-                        var parsed = JObject.Parse(tradeWithOrderId.Trade.CustomData);
-                        var apiMarketOrder =
-                            marketOrder.ConvertToApiModel(assetPair, asset.DisplayAccuracy ?? asset.Accuracy);
-                        parsed.Add("MarketOrder", JObject.FromObject(apiMarketOrder));
-                        tradeWithOrderId.Trade.CustomData = parsed.ToString();
+                        await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
+                            $"Unable to find asset in dictionary {tradeWithOrderId?.Trade?.Currency} for client {tradeWithOrderId?.Trade?.ClientId}");
+                        continue;
+                    }
+
+                    if (marketOrders.TryGetValue(tradeWithOrderId.MarketOrderId, out var marketOrder))
+                    {
+                        var assetPair = assetPairs.ContainsKey(marketOrder.AssetPairId)
+                            ? assetPairs[marketOrder.AssetPairId]
+                            : null;
+
+                        if (assetPair != null)
+                        {
+                            var parsed = JObject.Parse(tradeWithOrderId.Trade.CustomData);
+                            var apiMarketOrder =
+                                marketOrder.ConvertToApiModel(assetPair, asset.DisplayAccuracy ?? asset.Accuracy);
+                            parsed.Add("MarketOrder", JObject.FromObject(apiMarketOrder));
+                            tradeWithOrderId.Trade.CustomData = parsed.ToString();
+                        }
+                        else
+                        {
+                            await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
+                                $"Unable to find assetPair in dictionary {marketOrder?.AssetPairId} for client {tradeWithOrderId?.Trade?.ClientId}");
+                        }
                     }
                 }
+                catch (Exception e)
+                {
+                    await _log.WriteErrorAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
+                        $"ClientId = {tradeWithOrderId?.Trade?.ClientId}", e);
+                }
+                
             }
         }
 
