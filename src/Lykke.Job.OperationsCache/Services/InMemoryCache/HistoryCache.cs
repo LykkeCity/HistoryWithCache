@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Log;
@@ -76,7 +77,13 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
         private async Task<CacheModel> Load(string clientId)
         {
+            var stopWatch = new Stopwatch();
+
+            stopWatch.Start();
             var records = await _operationsHistoryReader.GetHistory(clientId);
+            stopWatch.Stop();
+
+            await _log.WriteInfoAsync(nameof(HistoryCache), "Get history time", $"{clientId}: {stopWatch.ElapsedMilliseconds}");
 
             var cacheModel = new CacheModel
             {

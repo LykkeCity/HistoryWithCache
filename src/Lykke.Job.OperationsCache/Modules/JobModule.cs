@@ -93,6 +93,8 @@ namespace Lykke.Job.OperationsCache.Modules
             RegisterRepositories(builder);
 
             builder.RegisterType<DelayWampUpSubject>()
+                .WithParameter("delayPeriod", _settings.CurrentValue.OperationsCacheJob.UpdateDelayPeriod)
+                .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
                 .As<IDelayWampUpSubject>()
                 .OnRelease(s => s.Dispose());
 
@@ -112,8 +114,7 @@ namespace Lykke.Job.OperationsCache.Modules
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
         {
             builder.RegisterType<MyPeriodicalHandler>()
-                .WithParameter("expirationPeriod", _settings.CurrentValue.OperationsCacheJob.ExpirationPeriod)
-                .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
+                .WithParameter("expirationPeriod", _settings.CurrentValue.OperationsCacheJob.ExpirationPeriod)                
                 .As<IStartable>()
                 .AutoActivate()
                 .SingleInstance();

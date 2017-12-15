@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -8,12 +9,16 @@ namespace Lykke.Job.OperationsCache.Services
     public class DelayWampUpSubject : IDisposable, IDelayWampUpSubject
     {
         private readonly IHistoryCache _historyCache;
+        private readonly TimeSpan _delayPeriod;
+        private readonly IList<string> _excludeList;
         private readonly Subject<string> _subject = new Subject<string>();
 
-        public DelayWampUpSubject(IHistoryCache historyCache)
+        public DelayWampUpSubject(IHistoryCache historyCache, TimeSpan delayPeriod, IList<string> excludeList)
         {
             _historyCache = historyCache;
-            _subject.Delay(TimeSpan.FromSeconds(5)).Subscribe(async clientId => await WarmUp(clientId));
+            _delayPeriod = delayPeriod;
+            _excludeList = excludeList;
+            _subject.Delay(delayPeriod).Subscribe(async clientId => await WarmUp(clientId));
         }
 
 
@@ -24,6 +29,9 @@ namespace Lykke.Job.OperationsCache.Services
 
         private async Task WarmUp(string clientId)
         {
+            if (_excludeList.Contains(clientId))
+                return;
+
             await _historyCache.WarmUp(clientId, true);
         }
 
