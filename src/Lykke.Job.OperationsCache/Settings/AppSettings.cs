@@ -1,7 +1,8 @@
-﻿using Lykke.Job.OperationsCache.Core.Settings.JobSettings;
-using Lykke.Job.OperationsCache.Core.Settings.SlackNotifications;
+﻿
+using Lykke.Job.OperationsCache.Settings.JobSettings;
+using Lykke.Job.OperationsCache.Settings.SlackNotifications;
 
-namespace Lykke.Job.OperationsCache.Core.Settings
+namespace Lykke.Job.OperationsCache.Settings
 {
     public class AppSettings
     {
@@ -9,6 +10,8 @@ namespace Lykke.Job.OperationsCache.Core.Settings
         public SlackNotificationsSettings SlackNotifications { get; set; }
         public SessionServiceSettings SessionSettings { get; set; }
         public AssetsServiceClientSettings AssetsServiceClient { get; set; }
+        public RabbitMqSettings RabbitMq { get; set; }
+        public RedisSettings RedisSettings { get; set; }
     }
 
     public class SessionServiceSettings
@@ -26,5 +29,10 @@ namespace Lykke.Job.OperationsCache.Core.Settings
     public class AssetsServiceClientSettings
     {
         public string ServiceUrl { get; set; }
+    }
+
+    public class RedisSettings
+    {
+        public string Configuration { get; set; }
     }
 }

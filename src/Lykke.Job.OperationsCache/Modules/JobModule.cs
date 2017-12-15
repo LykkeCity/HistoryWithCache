@@ -6,7 +6,6 @@ using AzureStorage.Tables.Templates.Index;
 using Common.Log;
 using Core.CashOperations;
 using Lykke.Job.OperationsCache.Core.Services;
-using Lykke.Job.OperationsCache.Core.Settings;
 using Lykke.Job.OperationsCache.Services;
 using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
@@ -23,7 +22,11 @@ using System;
 using Core;
 using System.Linq;
 using Common;
+using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Service.Assets.Client.Models;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Redis;
+using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -55,8 +58,14 @@ namespace Lykke.Job.OperationsCache.Modules
                 .As<IShutdownManager>();
             RegisterPeriodicalHandlers(builder);
 
+            builder.RegisterInstance(_settings.CurrentValue.OperationsCacheJob);
+            builder.RegisterInstance(_settings.CurrentValue.RabbitMq);
+            
+            builder.RegisterType<RedisStorage>()                
+                .As<IStorage>()
+                .SingleInstance();
 
-            builder.RegisterType<InMemoryCache>()
+            builder.RegisterType<HistoryCache>()
                 .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
                 .As<IHistoryCache>()
                 .SingleInstance();
@@ -82,6 +91,22 @@ namespace Lykke.Job.OperationsCache.Modules
             RegisterCachedDicts(builder);
 
             RegisterRepositories(builder);
+
+            builder.RegisterType<DelayWampUpSubject>()
+                .As<IDelayWampUpSubject>()
+                .OnRelease(s => s.Dispose());
+
+            builder.RegisterType<TransferQueue>()                
+                .SingleInstance();
+
+            builder.RegisterType<TradeQueue>()                
+                .SingleInstance();
+
+            builder.RegisterType<CashInOutQueue>()                
+                .SingleInstance();
+
+            builder.RegisterType<LimitTradeQueue>()                
+                .SingleInstance();
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
