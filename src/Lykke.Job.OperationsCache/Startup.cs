@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ using Common.Log;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
 using Lykke.Job.OperationsCache.Core.Services;
-using Lykke.Job.OperationsCache.Core.Settings;
+using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Job.OperationsCache.Modules;
 using Lykke.Logs;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
 
 namespace Lykke.Job.OperationsCache
 {
@@ -37,6 +39,12 @@ namespace Lykke.Job.OperationsCache
             Environment = env;
         }
 
+
+        private readonly IEnumerable<Type> _subscribers = new List<Type>
+        {
+            typeof(TransferQueue), typeof(TradeQueue), typeof(LimitTradeQueue), typeof(CashInOutQueue)
+        };
+
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             try
@@ -55,6 +63,12 @@ namespace Lykke.Job.OperationsCache
 
                 var builder = new ContainerBuilder();
                 var appSettings = Configuration.LoadSettings<AppSettings>();
+
+                services.AddDistributedRedisCache(options =>
+                {
+                    options.Configuration = appSettings.CurrentValue.RedisSettings.Configuration;
+                    options.InstanceName = "HistoryCacheInstance";
+                });
 
                 Log = CreateLogWithSlack(services, appSettings);
 
@@ -111,7 +125,7 @@ namespace Lykke.Job.OperationsCache
         {
             try
             {
-                // NOTE: Job not yet receive and process IsAlive requests here
+                StartSubscribers();
 
                 await ApplicationContainer.Resolve<IStartupManager>().StartAsync();
                 await Log.WriteMonitorAsync("", Program.EnvInfo, "Started");
@@ -202,6 +216,14 @@ namespace Lykke.Job.OperationsCache
             }
 
             return aggregateLogger;
+        }
+
+        private void StartSubscribers()
+        {
+            foreach (var subscriber in _subscribers)
+            {
+                ((IQueueSubscriber)ApplicationContainer.Resolve(subscriber)).Start();
+            }
         }
     }
 }
