@@ -1,4 +1,4 @@
-﻿namespace Lykke.Job.OperationsCache.Core.Settings.JobSettings
+﻿namespace Lykke.Job.OperationsCache.Settings.JobSettings
 {
     public class DbSettings
     {
