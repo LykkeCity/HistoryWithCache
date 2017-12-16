@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Common.Log;
 using Lykke.Job.OperationsCache.Core.Services;
 
@@ -14,7 +16,7 @@ namespace Lykke.Job.OperationsCache.Services
     public class StartupManager : IStartupManager
     {
         private readonly ILog _log;
-
+        
         public StartupManager(ILog log)
         {
             _log = log;
@@ -25,6 +27,6 @@ namespace Lykke.Job.OperationsCache.Services
             // TODO: Implement your startup logic here. Good idea is to log every step
 
             await Task.CompletedTask;
-        }
+        }        
     }
 }
