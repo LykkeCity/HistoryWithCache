@@ -25,7 +25,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         private readonly IWalletCredentialsRepository _walletCredentialsRepository;
         private readonly IMarketOrdersRepository _marketOrdersRepository;
         private readonly CachedDataDictionary<string, AssetPair> _assetPairs;
-        private readonly CachedTradableAssetsDictionary _tradableAssets;
+        private readonly CachedAssetsDictionary _assets;
         private readonly ILog _log;
 
         private IDictionary<string, AssetPair> _assetPairValues;
@@ -40,7 +40,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             IWalletCredentialsRepository walletCredentialsRepository,
             IMarketOrdersRepository marketOrdersRepository,
             CachedDataDictionary<string, AssetPair> assetPairs,
-            CachedTradableAssetsDictionary tradableAssets,
+            CachedAssetsDictionary assets,
             ILog log)
         {
             _cashOperationsRepository = cashOperationsRepository ?? throw new ArgumentNullException(nameof(cashOperationsRepository));
@@ -51,7 +51,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             _walletCredentialsRepository = walletCredentialsRepository ?? throw new ArgumentNullException(nameof(walletCredentialsRepository));
             _marketOrdersRepository = marketOrdersRepository ?? throw new ArgumentNullException(nameof(marketOrdersRepository));
             _assetPairs = assetPairs ?? throw new ArgumentNullException(nameof(assetPairs));
-            _tradableAssets = tradableAssets ?? throw new ArgumentNullException(nameof(tradableAssets));
+            _assets = assets ?? throw new ArgumentNullException(nameof(assets));
             _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
@@ -196,7 +196,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         {
             if (_assetValues == null)
             {
-                _assetValues = await _tradableAssets.GetDictionaryAsync();
+                _assetValues = await _assets.GetDictionaryAsync();
             }
 
             return _assetValues;
