@@ -67,7 +67,6 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterType<HistoryCache>()
                 .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
-                .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
                 .As<IHistoryCache>()
                 .SingleInstance();
 
