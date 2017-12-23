@@ -1,7 +1,5 @@
-﻿
-using Lykke.Job.OperationsCache.Settings.JobSettings;
+﻿using Lykke.Job.OperationsCache.Settings.JobSettings;
 using Lykke.Job.OperationsCache.Settings.SlackNotifications;
-using Lykke.SettingsReader.Attributes;
 
 namespace Lykke.Job.OperationsCache.Settings
 {
@@ -35,7 +33,5 @@ namespace Lykke.Job.OperationsCache.Settings
     public class RedisSettings
     {
         public string Configuration { get; set; }
-        [Optional]
-        public string InstanceName { get; set; }
     }
 }

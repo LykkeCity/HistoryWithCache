@@ -67,7 +67,7 @@ namespace Lykke.Job.OperationsCache
                 services.AddDistributedRedisCache(options =>
                 {
                     options.Configuration = appSettings.CurrentValue.RedisSettings.Configuration;
-                    options.InstanceName = appSettings.CurrentValue.RedisSettings.InstanceName ?? "HistoryCacheInstance";
+                    options.InstanceName = appSettings.CurrentValue.OperationsCacheJob.CacheInstanceName ?? "HistoryCacheInstance";
                 });
 
                 Log = CreateLogWithSlack(services, appSettings);
