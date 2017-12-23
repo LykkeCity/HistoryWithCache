@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace Lykke.Job.OperationsCache.Services
             _historyCache = historyCache;
             _delayPeriod = delayPeriod;
             _excludeList = excludeList;
-            _subject.Delay(delayPeriod).Subscribe(async clientId => await WarmUp(clientId));
+            _subject.Delay(delayPeriod).ObserveOn(new EventLoopScheduler()).Subscribe(async clientId => await WarmUp(clientId));
         }
 
 
