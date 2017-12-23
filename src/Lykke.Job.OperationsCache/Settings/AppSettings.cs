@@ -1,5 +1,4 @@
-﻿
-using Lykke.Job.OperationsCache.Settings.JobSettings;
+﻿using Lykke.Job.OperationsCache.Settings.JobSettings;
 using Lykke.Job.OperationsCache.Settings.SlackNotifications;
 
 namespace Lykke.Job.OperationsCache.Settings
