@@ -64,7 +64,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
             var newCachedValue = await Load(clientId);
 
-            return newCachedValue?.Records.Values.Select(v => v) ?? Enumerable.Empty<HistoryEntry>();
+            return newCachedValue?.Records ?? Enumerable.Empty<HistoryEntry>();
         }
 
         public async Task WarmUp(string clientId, bool force = false)
@@ -86,10 +86,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
             var cacheModel = new CacheModel
             {
-                Records = new Dictionary<string, HistoryEntry>(
-                    records
-                        .OrderByDescending(r => r.DateTime)
-                        .ToDictionary(k => k.Id ?? Guid.NewGuid().ToString(), v => v))
+                Records = records.OrderByDescending(r => r.DateTime).ToList()
             };
 
             await _storage.Set(clientId, cacheModel);
