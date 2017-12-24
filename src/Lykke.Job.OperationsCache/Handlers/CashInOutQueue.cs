@@ -14,7 +14,7 @@ namespace Lykke.Job.OperationsCache.Handlers
         private const string QueueName = "transactions.cashinout.cache";
 
         private readonly ILog _log;
-        private readonly IDelayWampUpSubject _delayWampUpSubject;
+        private readonly IDelayWarmUp _delayWampUpSubject;
         
         private readonly RabbitMqSettings _rabbitConfig;
         private RabbitMqSubscriber<CashInOutQueueMessage> _subscriber;
@@ -22,7 +22,7 @@ namespace Lykke.Job.OperationsCache.Handlers
         public CashInOutQueue(
             RabbitMqSettings config, 
             ILog log,
-            IDelayWampUpSubject delayWampUpSubject)
+            IDelayWarmUp delayWampUpSubject)
         {
             _rabbitConfig = config;
             _log = log;

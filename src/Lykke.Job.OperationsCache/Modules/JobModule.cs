@@ -102,11 +102,10 @@ namespace Lykke.Job.OperationsCache.Modules
 
             RegisterRepositories(builder);
 
-            builder.RegisterType<DelayWampUpSubject>()
+            builder.RegisterType<DelayWarmUp>()
                 .WithParameter("delayPeriod", _settings.CurrentValue.OperationsCacheJob.UpdateDelayPeriod)
                 .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
-                .As<IDelayWampUpSubject>()
-                .OnRelease(s => s.Dispose());
+                .As<IDelayWarmUp>();
 
             builder.RegisterType<TransferQueue>()
                 .SingleInstance();
