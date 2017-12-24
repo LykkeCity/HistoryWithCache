@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Async;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
@@ -11,6 +10,7 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
 {
     public class MyPeriodicalHandler : TimerPeriod
     {
+        private readonly IList<string> _excludeList;
         private readonly ILog _log;
         private readonly IHistoryCache _historyCache;
         private readonly ClientSessionsRepository _clientSessionsRepository;
@@ -20,9 +20,11 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
             ClientSessionsRepository clientSessionsRepository,
             IHistoryCache historyCache,
             ILog log,
-            TimeSpan expirationPeriod) :
+            TimeSpan expirationPeriod,
+            IList<string> excludeList) :
             base(nameof(MyPeriodicalHandler), (int)expirationPeriod.TotalMilliseconds, log)
         {
+            _excludeList = excludeList;
             _log = log ?? throw new ArgumentNullException(nameof(log));
             _clientSessionsRepository = clientSessionsRepository ?? throw new ArgumentNullException(nameof(_clientSessionsRepository));
             _historyCache = historyCache ?? throw new ArgumentNullException(nameof(historyCache));            
@@ -38,7 +40,7 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
                 _inProcess = true;
 
                 var timestamp = DateTime.UtcNow;
-                var clientsIds = (await _clientSessionsRepository.GetClientsIds()).ToList();
+                var clientsIds = (await _clientSessionsRepository.GetClientsIds()).Where(id => !_excludeList.Contains(id)).ToList();
 
                 await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processing {clientsIds.Count} active clients.");
                 foreach (var clientId in clientsIds)

@@ -60,13 +60,23 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterInstance(_settings.CurrentValue.OperationsCacheJob);
             builder.RegisterInstance(_settings.CurrentValue.RabbitMq);
-            
-            builder.RegisterType<RedisStorage>()                
-                .As<IStorage>()
-                .SingleInstance();
+
+            if (_settings.CurrentValue.OperationsCacheJob.InMemory)
+            {
+                builder.RegisterType<InMemoryStorage>()
+                    .As<IStorage>()
+                    .SingleInstance();
+            }
+            else
+            {
+                builder.RegisterType<RedisStorage>()
+                    .As<IStorage>()
+                    .SingleInstance();
+            }
 
             builder.RegisterType<HistoryCache>()
                 .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
+                .WithParameter("maxHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.MaxHistoryLengthPerClient)
                 .As<IHistoryCache>()
                 .SingleInstance();
 
@@ -98,23 +108,24 @@ namespace Lykke.Job.OperationsCache.Modules
                 .As<IDelayWampUpSubject>()
                 .OnRelease(s => s.Dispose());
 
-            builder.RegisterType<TransferQueue>()                
+            builder.RegisterType<TransferQueue>()
                 .SingleInstance();
 
-            builder.RegisterType<TradeQueue>()                
+            builder.RegisterType<TradeQueue>()
                 .SingleInstance();
 
-            builder.RegisterType<CashInOutQueue>()                
+            builder.RegisterType<CashInOutQueue>()
                 .SingleInstance();
 
-            builder.RegisterType<LimitTradeQueue>()                
+            builder.RegisterType<LimitTradeQueue>()
                 .SingleInstance();
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
         {
             builder.RegisterType<MyPeriodicalHandler>()
-                .WithParameter("expirationPeriod", _settings.CurrentValue.OperationsCacheJob.ExpirationPeriod)                
+                .WithParameter("expirationPeriod", _settings.CurrentValue.OperationsCacheJob.ExpirationPeriod)
+                .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
                 .As<IStartable>()
                 .AutoActivate()
                 .SingleInstance();

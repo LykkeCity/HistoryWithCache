@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Job.OperationsCache.Models;
 using MessagePack;
@@ -23,7 +22,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
                 return null;
 
             var cacheModel = MessagePackSerializer.Deserialize<CacheModel>(value);
-            return cacheModel.Records.Values.Select(v => v);
+            return cacheModel.Records;
         }
 
         public async Task Set(string clientId, CacheModel cacheModel)
@@ -34,7 +33,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
         private string GetCacheKey(string clientId)
         {
-            return $"client:{clientId}:history";
+            return $":client:{clientId}:history";
         }
     }
 }

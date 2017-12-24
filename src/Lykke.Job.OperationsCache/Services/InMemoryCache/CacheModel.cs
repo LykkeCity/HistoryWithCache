@@ -7,6 +7,6 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
     [MessagePackObject(keyAsPropertyName: true)]
     public class CacheModel
     {
-        public Dictionary<string, HistoryEntry> Records;
+        public List<HistoryEntry> Records;
     }
 }
