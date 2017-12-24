@@ -125,6 +125,7 @@ namespace Lykke.Job.OperationsCache.Modules
         {
             builder.RegisterType<MyPeriodicalHandler>()
                 .WithParameter("expirationPeriod", _settings.CurrentValue.OperationsCacheJob.ExpirationPeriod)
+                .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
                 .As<IStartable>()
                 .AutoActivate()
                 .SingleInstance();
