@@ -5,6 +5,8 @@ namespace Lykke.Job.OperationsCache.Settings.JobSettings
 {
     public class OperationsCacheSettings
     {
+        public bool InMemory { get; set; }
+        public int MaxHistoryLengthPerClient { get; set; }
         public string CacheInstanceName { get; set; }
         public TimeSpan ExpirationPeriod { get; set; }
         public DbSettings Db { get; set; }

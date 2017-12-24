@@ -1,7 +1,6 @@
 ﻿using Core.CashOperations;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
-using Newtonsoft.Json;
 
 namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
@@ -17,7 +16,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 DateTime = source.DateTime,
                 OpType = "CashInOut",
                 Amount = source.Amount,
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = NetJSON.NetJSON.Serialize(source)
             };
         }
 
@@ -31,7 +30,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 OpType = "CashOutAttempt",
                 DateTime = source.DateTime,
                 Amount = source.Amount,
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = NetJSON.NetJSON.Serialize(source)
             };
         }
 
@@ -45,7 +44,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 Currency = source.AssetId,
                 DateTime = source.DateTime,
                 OpType = "ClientTrade",
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = NetJSON.NetJSON.Serialize(source)
             };
         }
 
@@ -59,7 +58,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 Amount = source.Amount,
                 Currency = source.AssetId,
                 OpType = "TransferEvent",
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = NetJSON.NetJSON.Serialize(source)
             };
         }
 
@@ -73,7 +72,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 Amount = source.Volume,
                 Currency = source.AssetId,
                 OpType = "LimitTradeEvent",
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = NetJSON.NetJSON.Serialize(source)
             };
         }
     }

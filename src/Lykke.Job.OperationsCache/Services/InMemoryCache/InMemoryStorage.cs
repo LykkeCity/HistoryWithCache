@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Job.OperationsCache.Models;
@@ -19,7 +18,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         {
             if (_storage.TryGetValue(clientId, out CacheModel cachedValue))
             {
-                return cachedValue.Records.Values;
+                return cachedValue.Records;
             }
 
             return null;            
