@@ -34,12 +34,12 @@ namespace Lykke.Job.OperationsCache.Handlers
         private readonly ILog _log;
         
         private readonly RabbitMqSettings _rabbitConfig;
-        private readonly IDelayWampUpSubject _delayWampUpSubject;
+        private readonly IDelayWarmUp _delayWampUpSubject;
         private RabbitMqSubscriber<LimitQueueItem> _subscriber;
 
         public LimitTradeQueue(
             RabbitMqSettings config,
-            IDelayWampUpSubject delayWampUpSubject,
+            IDelayWarmUp delayWampUpSubject,
             ILog log)
         {
             _rabbitConfig = config;

@@ -16,10 +16,10 @@ namespace Lykke.Job.OperationsCache.Handlers
         private readonly ILog _log;        
 
         private readonly RabbitMqSettings _rabbitConfig;
-        private readonly IDelayWampUpSubject _delayWampUpSubject;
+        private readonly IDelayWarmUp _delayWampUpSubject;
         private RabbitMqSubscriber<TransferQueueMessage> _subscriber;        
 
-        public TransferQueue(RabbitMqSettings rabbitConfig, IDelayWampUpSubject delayWampUpSubject, ILog log)
+        public TransferQueue(RabbitMqSettings rabbitConfig, IDelayWarmUp delayWampUpSubject, ILog log)
         {
             _rabbitConfig = rabbitConfig;
             _delayWampUpSubject = delayWampUpSubject;            
