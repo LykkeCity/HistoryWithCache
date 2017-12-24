@@ -22,7 +22,9 @@ namespace Lykke.Job.OperationsCache.Services
             if (_excludeList.Contains(clientId))
                 return;
 
-            await Task.Delay(_delayPeriod).ContinueWith(_ => WarmUp(clientId));
+            await Task.Delay(_delayPeriod);
+
+            await WarmUp(clientId);
         }
 
         private async Task WarmUp(string clientId)
