@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Log;
@@ -11,18 +9,20 @@ using Lykke.Job.OperationsCache.Services.OperationsHistory;
 namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 {
     public class HistoryCache : IHistoryCache
-    {        
+    {
         private readonly ILog _log;
         private readonly IStorage _storage;
         private readonly IOperationsHistoryReader _operationsHistoryReader;
         private readonly int _valuesPerPage;
+        private readonly int _maxHistoryLengthPerClient;
 
-        public HistoryCache(ILog log, IStorage storage, IOperationsHistoryReader operationsHistoryReader, int valuesPerPage)
-        {            
+        public HistoryCache(ILog log, IStorage storage, IOperationsHistoryReader operationsHistoryReader, int valuesPerPage, int maxHistoryLengthPerClient)
+        {
             _log = log;
             _storage = storage;
             _operationsHistoryReader = operationsHistoryReader ?? throw new ArgumentNullException(nameof(operationsHistoryReader));
             _valuesPerPage = valuesPerPage;
+            _maxHistoryLengthPerClient = maxHistoryLengthPerClient;
         }
 
         public async Task<IEnumerable<HistoryEntry>> GetAllPagedAsync(string clientId, int page)
@@ -32,7 +32,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
                 GetTopValueForPagedApi(),
                 GetSkipValueForPagedApi(page));
         }
-        
+
         private async Task<IEnumerable<HistoryEntry>> InternalGetAllAsync(string clientId, int top, int skip)
         {
             var clientRecords = await GetRecordsByClient(clientId);
@@ -44,7 +44,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
             return pagedResult;
         }
-        
+
         private int GetSkipValueForPagedApi(int page)
         {
             return (page - 1) * _valuesPerPage;
@@ -60,13 +60,13 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
             var history = await _storage.Get(clientId);
 
             if (history != null)
-                return history;            
+                return history;
 
             var newCachedValue = await Load(clientId);
 
             return newCachedValue?.Records.Values.Select(v => v) ?? Enumerable.Empty<HistoryEntry>();
         }
-        
+
         public async Task WarmUp(string clientId, bool force = false)
         {
             if (force || _storage.Get(clientId) == null)
@@ -78,7 +78,12 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         private async Task<CacheModel> Load(string clientId)
         {
             var records = await _operationsHistoryReader.GetHistory(clientId);
-            
+            if (records.Count > _maxHistoryLengthPerClient)
+            {
+                await _log.WriteWarningAsync(nameof(HistoryCache), nameof(Load), $"ClientId: {clientId}", $"Records: {records.Count}");
+                return new CacheModel();
+            }
+
             var cacheModel = new CacheModel
             {
                 Records = new Dictionary<string, HistoryEntry>(
@@ -90,6 +95,6 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
             await _storage.Set(clientId, cacheModel);
 
             return cacheModel;
-        } 
+        }
     }
 }
