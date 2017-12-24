@@ -33,7 +33,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
         private string GetCacheKey(string clientId)
         {
-            return $"client:{clientId}:history";
+            return $":client:{clientId}:history";
         }
     }
 }
