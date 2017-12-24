@@ -85,7 +85,7 @@ namespace Lykke.Job.OperationsCache.Handlers
         {
             foreach (var limitOrder in tradeItem.Orders)
             {
-                _delayWampUpSubject.OnNewOperation(limitOrder.Order.ClientId);
+                await _delayWampUpSubject.OnNewOperation(limitOrder.Order.ClientId);
             }            
         }
 

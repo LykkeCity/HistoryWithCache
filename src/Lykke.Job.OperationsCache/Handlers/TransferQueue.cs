@@ -62,8 +62,8 @@ namespace Lykke.Job.OperationsCache.Handlers
 
         private async Task ProcessMessage(TransferQueueMessage queueMessage)
         {
-            _delayWampUpSubject.OnNewOperation(queueMessage.FromClientId);
-            _delayWampUpSubject.OnNewOperation(queueMessage.ToClientid);
+            await _delayWampUpSubject.OnNewOperation(queueMessage.FromClientId);
+            await _delayWampUpSubject.OnNewOperation(queueMessage.ToClientid);
         }
 
         public void Dispose()
