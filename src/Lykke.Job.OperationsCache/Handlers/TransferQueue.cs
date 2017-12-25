@@ -35,7 +35,7 @@ namespace Lykke.Job.OperationsCache.Handlers
                 ExchangeName = _rabbitConfig.ExchangeTransfer,
                 DeadLetterExchangeName = $"{_rabbitConfig.ExchangeTransfer}.cache.dlx",
                 RoutingKey = "",
-                IsDurable = true
+                IsDurable = false
             };
 
             try

@@ -1,23 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Common;
 using Common.Log;
-using Core.BitCoin;
-using Core.CashOperations;
-using Core.Exchange;
-using Core.Offchain;
 using Lykke.Job.OperationsCache.Handlers.Models;
 using Lykke.Job.OperationsCache.Services;
-using Lykke.Job.OperationsCache.Settings;
 using Lykke.Job.OperationsCache.Settings.JobSettings;
 using Lykke.RabbitMqBroker;
 using Lykke.RabbitMqBroker.Subscriber;
-using Lykke.Service.Assets.Client;
-using Lykke.Service.Assets.Client.Models;
-using Lykke.Service.OperationsRepository.Core.CashOperations;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace Lykke.Job.OperationsCache.Handlers
 {
@@ -25,7 +13,6 @@ namespace Lykke.Job.OperationsCache.Handlers
     {
 #if DEBUG
         private const string QueueName = "transactions.limit-trades-dev.cache";
-        private const bool QueueDurable = false;
 #else
         private const string QueueName = "transactions.limit-trades.cache";
         private const bool QueueDurable = true;
@@ -56,7 +43,7 @@ namespace Lykke.Job.OperationsCache.Handlers
                 ExchangeName = _rabbitConfig.ExchangeLimit,
                 DeadLetterExchangeName = $"{_rabbitConfig.ExchangeLimit}.dlx",
                 RoutingKey = "",
-                IsDurable = QueueDurable
+                IsDurable = false
             };
 
             try
