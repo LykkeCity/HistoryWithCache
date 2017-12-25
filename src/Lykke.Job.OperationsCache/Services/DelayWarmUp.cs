@@ -38,8 +38,8 @@ namespace Lykke.Job.OperationsCache.Services
             if (_excludeList.Contains(clientId))
                 return;
 
-            var activeSessions = (await _sessions.GetDictionaryAsync()).Keys;
-            if (!activeSessions.Contains(clientId))
+            var activeSessions = await _sessions.GetDictionaryAsync();
+            if (!activeSessions.ContainsKey(clientId))
                 return;
 
             _subject.OnNext(clientId);
