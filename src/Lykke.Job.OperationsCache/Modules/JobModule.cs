@@ -98,14 +98,15 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterInstance<IAssetsService>(
                 new AssetsService(new Uri(_settings.CurrentValue.AssetsServiceClient.ServiceUrl)));
 
-            RegisterCachedDicts(builder);
-
             RegisterRepositories(builder);
+
+            RegisterCachedDicts(builder);
 
             builder.RegisterType<DelayWarmUp>()
                 .WithParameter("delayPeriod", _settings.CurrentValue.OperationsCacheJob.UpdateDelayPeriod)
                 .WithParameter("excludeList", _settings.CurrentValue.OperationsCacheJob.ExcludeClientIdList)
-                .As<IDelayWarmUp>();
+                .As<IDelayWarmUp>()
+                .OnRelease(x => x.Dispose());
 
             builder.RegisterType<TransferQueue>()
                 .SingleInstance();
@@ -196,6 +197,17 @@ namespace Lykke.Job.OperationsCache.Modules
                 return new CachedDataDictionary<string, AssetPair>
                 (
                     async () => (await assetsService.AssetPairGetAllAsync()).ToDictionary(itm => itm.Id)
+                );
+
+            }).SingleInstance();
+
+            builder.Register(x =>
+            {
+                var sessionsRepository = x.Resolve<IComponentContext>().Resolve<ClientSessionsRepository>();
+
+                return new CachedSessionsDictionary
+                (
+                    async () => (await sessionsRepository.GetClientsIds()).ToDictionary(itm => itm)
                 );
 
             }).SingleInstance();
