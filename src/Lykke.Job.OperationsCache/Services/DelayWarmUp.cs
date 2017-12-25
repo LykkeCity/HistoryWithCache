@@ -1,27 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using Core;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 
 namespace Lykke.Job.OperationsCache.Services
 {
-    public class DelayWarmUp : IDelayWarmUp
+    public class DelayWarmUp : IDelayWarmUp, IDisposable
     {
         private readonly IHistoryCache _historyCache;
         private readonly TimeSpan _delayPeriod;
         private readonly IList<string> _excludeList;
-        private readonly ClientSessionsRepository _clientSessionsRepository;
+        private readonly CachedSessionsDictionary _sessions;
+        private readonly Subject<string> _subject = new Subject<string>();
 
         public DelayWarmUp(
-            IHistoryCache historyCache, 
-            TimeSpan delayPeriod, 
+            IHistoryCache historyCache,
+            TimeSpan delayPeriod,
             IList<string> excludeList,
-            ClientSessionsRepository clientSessionsRepository)
+            CachedSessionsDictionary sessions)
         {
             _historyCache = historyCache;
             _delayPeriod = delayPeriod;
             _excludeList = excludeList;
-            _clientSessionsRepository = clientSessionsRepository;
+            _sessions = sessions;
+            _subject.Delay(delayPeriod).ObserveOn(new EventLoopScheduler()).Subscribe(async clientId => await WarmUp(clientId));
+        }
+
+        public void Dispose()
+        {
+            _subject?.Dispose();
         }
 
         public async Task OnNewOperation(string clientId)
@@ -29,13 +39,11 @@ namespace Lykke.Job.OperationsCache.Services
             if (_excludeList.Contains(clientId))
                 return;
 
-            var activeSessions = await _clientSessionsRepository.GetClientsIds();
+            var activeSessions = (await _sessions.GetDictionaryAsync()).Keys;
             if (!activeSessions.Contains(clientId))
                 return;
 
-            await Task.Delay(_delayPeriod);
-
-            await WarmUp(clientId);
+            _subject.OnNext(clientId);
         }
 
         private async Task WarmUp(string clientId)
