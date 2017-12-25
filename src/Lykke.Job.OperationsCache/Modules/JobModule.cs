@@ -207,7 +207,7 @@ namespace Lykke.Job.OperationsCache.Modules
 
                 return new CachedSessionsDictionary
                 (
-                    async () => (await sessionsRepository.GetClientsIds()).ToDictionary(itm => itm)
+                    async () => (await sessionsRepository.GetClientsIds()).Distinct().ToDictionary(itm => itm)
                 );
 
             }).SingleInstance();
