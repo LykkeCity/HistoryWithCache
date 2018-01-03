@@ -41,7 +41,7 @@
     <PackageReference Include="Lykke.RabbitMqBroker" Version="3.0.3" />
     <PackageReference Include="Lykke.Service.Assets.Client" Version="2.1.0.28" />
     <!-- #endif -->
-    <PackageReference Include="Lykke.SettingsReader" Version="1.0.42" />
+    <PackageReference Include="Lykke.SettingsReader" Version="1.0.45" />
     <PackageReference Include="Lykke.SlackNotification.AzureQueue" Version="1.0.5" />
     <PackageReference Include="MessagePack" Version="1.7.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.0" />
