@@ -77,6 +77,7 @@ namespace Lykke.Job.OperationsCache.Modules
             builder.RegisterType<HistoryCache>()
                 .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
                 .WithParameter("maxHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.MaxHistoryLengthPerClient)
+                .WithParameter("saveHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.SaveHistoryLengthPerClient)
                 .As<IHistoryCache>()
                 .SingleInstance();
 

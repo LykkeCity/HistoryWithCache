@@ -15,14 +15,16 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
         private readonly IOperationsHistoryReader _operationsHistoryReader;
         private readonly int _valuesPerPage;
         private readonly int _maxHistoryLengthPerClient;
+        private readonly int _saveHistoryLengthPerClient;
 
-        public HistoryCache(ILog log, IStorage storage, IOperationsHistoryReader operationsHistoryReader, int valuesPerPage, int maxHistoryLengthPerClient)
+        public HistoryCache(ILog log, IStorage storage, IOperationsHistoryReader operationsHistoryReader, int valuesPerPage, int maxHistoryLengthPerClient, int saveHistoryLengthPerClient)
         {
             _log = log;
             _storage = storage;
             _operationsHistoryReader = operationsHistoryReader ?? throw new ArgumentNullException(nameof(operationsHistoryReader));
             _valuesPerPage = valuesPerPage;
             _maxHistoryLengthPerClient = maxHistoryLengthPerClient;
+            _saveHistoryLengthPerClient = saveHistoryLengthPerClient;
         }
 
         public async Task<IEnumerable<HistoryEntry>> GetAllPagedAsync(string clientId, int page)
@@ -86,7 +88,7 @@ namespace Lykke.Job.OperationsCache.Services.InMemoryCache
 
             var cacheModel = new CacheModel
             {
-                Records = records.OrderByDescending(r => r.DateTime).ToList()
+                Records = records.OrderByDescending(r => r.DateTime).Take(_saveHistoryLengthPerClient).ToList()
             };
 
             await _storage.Set(clientId, cacheModel);
