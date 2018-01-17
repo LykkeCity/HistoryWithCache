@@ -28,8 +28,8 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         private readonly CachedAssetsDictionary _assets;
         private readonly ILog _log;
 
-        private IDictionary<string, AssetPair> _assetPairValues;
-        private IDictionary<string, Asset> _assetValues;
+        private IReadOnlyDictionary<string, AssetPair> _assetPairValues;
+        private IReadOnlyDictionary<string, Asset> _assetValues;
 
         public OperationsHistoryRepoReader(
             ICashOperationsRepository cashOperationsRepository,
@@ -182,7 +182,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             }
         }
 
-        private async Task<IDictionary<string, AssetPair>> GetAssetPairs()
+        private async Task<IReadOnlyDictionary<string, AssetPair>> GetAssetPairs()
         {
             if (_assetPairValues == null)
             {
@@ -192,7 +192,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             return _assetPairValues;
         }
 
-        private async Task<IDictionary<string, Asset>> GetAssets()
+        private async Task<IReadOnlyDictionary<string, Asset>> GetAssets()
         {
             if (_assetValues == null)
             {
