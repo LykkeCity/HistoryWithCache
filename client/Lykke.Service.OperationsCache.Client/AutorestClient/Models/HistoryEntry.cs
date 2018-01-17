@@ -22,7 +22,7 @@ namespace Lykke.Service.OperationsCache.AutorestClient.Models
         /// <summary>
         /// Initializes a new instance of the HistoryEntry class.
         /// </summary>
-        public HistoryEntry(string id = default(string), System.DateTime? dateTime = default(System.DateTime?), double? amount = default(double?), string currency = default(string), string clientId = default(string), string customData = default(string), string opType = default(string))
+        public HistoryEntry(double feeSize, string id = default(string), System.DateTime? dateTime = default(System.DateTime?), double? amount = default(double?), string currency = default(string), string clientId = default(string), string customData = default(string), string opType = default(string), string feeType = default(string))
         {
             Id = id;
             DateTime = dateTime;
@@ -31,6 +31,8 @@ namespace Lykke.Service.OperationsCache.AutorestClient.Models
             ClientId = clientId;
             CustomData = customData;
             OpType = opType;
+            FeeSize = feeSize;
+            FeeType = feeType;
             CustomInit();
         }
 
@@ -74,5 +76,25 @@ namespace Lykke.Service.OperationsCache.AutorestClient.Models
         [JsonProperty(PropertyName = "OpType")]
         public string OpType { get; set; }
 
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "FeeSize")]
+        public double FeeSize { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "FeeType")]
+        public string FeeType { get; set; }
+
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            //Nothing to validate
+        }
     }
 }
