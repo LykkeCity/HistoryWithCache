@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lykke.Job.OperationsCache.Core.Domain;
+using System;
 
 namespace Lykke.Service.OperationsRepository.Core.CashOperations
 {
@@ -21,6 +22,10 @@ namespace Lykke.Service.OperationsRepository.Core.CashOperations
         DateTime DateTime { get; }
 
         bool IsHidden { get; }
+
+        double FeeSize { get; }
+
+        FeeType FeeType { get; }
     }
 
     public enum TransactionStates

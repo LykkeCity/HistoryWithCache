@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lykke.Job.OperationsCache.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -77,6 +78,8 @@ namespace Lykke.Service.OperationsRepository.Core.CashOperations
         public string AccountId { get; set; }
         public CashOutVolumeSize VolumeSize { get; set; }
         public string PreviousId { get; set; }
+        public double FeeSize { get; set; }
+        public FeeType FeeType { get; set; }
     }
 
     public interface ICashOutBaseRepository

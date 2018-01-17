@@ -6,6 +6,7 @@ using AzureStorage;
 using AzureStorage.Tables.Templates.Index;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
 using Microsoft.WindowsAzure.Storage.Table;
+using Lykke.Job.OperationsCache.Core.Domain;
 
 namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
 {
@@ -38,6 +39,22 @@ namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
             set { StateField = value.ToString(); }
         }
         public string ClientId { get; set; }
+
+        public double FeeSize { get; set; }
+        public FeeType FeeType { get; set; }
+        public string FeeTypeText
+        {
+            get
+            {
+                return FeeType.ToString();
+            }
+
+            set
+            {
+                if (Enum.TryParse(value, out FeeType tmpType)) FeeType = tmpType;
+                else FeeType = FeeType.Unknown;
+            }
+        }
 
         public static class ByClientId
         {
