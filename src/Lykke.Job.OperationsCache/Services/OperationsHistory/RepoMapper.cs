@@ -17,7 +17,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 DateTime = source.DateTime,
                 OpType = "CashInOut",
                 Amount = source.Amount,
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = JsonConvert.SerializeObject(source),
+                FeeSize = source.FeeSize,
+                FeeType = source.FeeType.ToString()
             };
         }
 
@@ -31,7 +33,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 OpType = "CashOutAttempt",
                 DateTime = source.DateTime,
                 Amount = source.Amount,
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = JsonConvert.SerializeObject(source),
+                FeeSize = source.FeeSize,
+                FeeType = source.FeeType.ToString()
             };
         }
 
@@ -45,7 +49,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 Currency = source.AssetId,
                 DateTime = source.DateTime,
                 OpType = "ClientTrade",
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = JsonConvert.SerializeObject(source),
+                FeeSize = source.FeeSize,
+                FeeType = source.FeeType.ToString()
             };
         }
 
@@ -59,7 +65,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                 Amount = source.Amount,
                 Currency = source.AssetId,
                 OpType = "TransferEvent",
-                CustomData = JsonConvert.SerializeObject(source)
+                CustomData = JsonConvert.SerializeObject(source),
+                FeeSize = source.FeeSize,
+                FeeType = source.FeeType.ToString()
             };
         }
 

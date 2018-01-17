@@ -13,5 +13,9 @@ namespace Lykke.Job.OperationsCache.Models
         public string ClientId { get; set; }
         public string CustomData { get; set; }
         public string OpType { get; set; }
+        public double FeeSize { get; set; }
+        public string FeeType { get; set; }
+
+        public override string ToString() => $"FeeSize: {FeeSize}, FeeType: {FeeType}";
     }
 }
