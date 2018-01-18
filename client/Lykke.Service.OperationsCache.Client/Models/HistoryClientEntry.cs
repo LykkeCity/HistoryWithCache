@@ -11,6 +11,8 @@ namespace Lykke.Service.OperationsCache.Client.Models
         public string ClientId { get; set; }
         public string CustomData { get; set; }
         public string OpType { get; set; }
+        public double FeeSize { get; set; }
+        public string FeeType { get; set; }
     }
 
     public static class Mapper
@@ -25,7 +27,9 @@ namespace Lykke.Service.OperationsCache.Client.Models
                 Currency = model.Currency,
                 CustomData = model.CustomData,
                 DateTime = model.DateTime,
-                OpType = model.OpType
+                OpType = model.OpType,
+                FeeSize = model.FeeSize,
+                FeeType = model.FeeType
             };
         }
     }
