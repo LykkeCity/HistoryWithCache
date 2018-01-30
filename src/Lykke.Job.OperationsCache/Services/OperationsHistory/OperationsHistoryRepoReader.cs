@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Core.CashOperations;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
-using Core.BitCoin;
 using Core.Exchange;
 using Newtonsoft.Json.Linq;
 using Common;
