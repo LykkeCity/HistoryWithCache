@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Core.CashOperations;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
-using Core.BitCoin;
 using Core.Exchange;
 using Newtonsoft.Json.Linq;
 using Common;
@@ -21,8 +20,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         private readonly IClientTradesRepository _clientTradesRepository;
         private readonly ITransferEventsRepository _transferEventsRepository;
         private readonly ICashOutAttemptRepository _cashOutAttemptRepository;
-        private readonly ILimitTradeEventsRepository _limitTradeEventsRepository;
-        private readonly IWalletCredentialsRepository _walletCredentialsRepository;
+        private readonly ILimitTradeEventsRepository _limitTradeEventsRepository;        
         private readonly IMarketOrdersRepository _marketOrdersRepository;
         private readonly CachedDataDictionary<string, AssetPair> _assetPairs;
         private readonly CachedAssetsDictionary _assets;
@@ -36,8 +34,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             IClientTradesRepository clientTradesRepository,
             ITransferEventsRepository transferEventsRepository,
             ICashOutAttemptRepository cashOutAttemptRepository,
-            ILimitTradeEventsRepository limitTradeEventsRepository,
-            IWalletCredentialsRepository walletCredentialsRepository,
+            ILimitTradeEventsRepository limitTradeEventsRepository,            
             IMarketOrdersRepository marketOrdersRepository,
             CachedDataDictionary<string, AssetPair> assetPairs,
             CachedAssetsDictionary assets,
@@ -47,8 +44,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             _clientTradesRepository = clientTradesRepository ?? throw new ArgumentNullException(nameof(clientTradesRepository));
             _transferEventsRepository = transferEventsRepository ?? throw new ArgumentNullException(nameof(transferEventsRepository));
             _cashOutAttemptRepository = cashOutAttemptRepository ?? throw new ArgumentNullException(nameof(cashOutAttemptRepository));
-            _limitTradeEventsRepository = limitTradeEventsRepository ?? throw new ArgumentNullException(nameof(limitTradeEventsRepository));
-            _walletCredentialsRepository = walletCredentialsRepository ?? throw new ArgumentNullException(nameof(walletCredentialsRepository));
+            _limitTradeEventsRepository = limitTradeEventsRepository ?? throw new ArgumentNullException(nameof(limitTradeEventsRepository));            
             _marketOrdersRepository = marketOrdersRepository ?? throw new ArgumentNullException(nameof(marketOrdersRepository));
             _assetPairs = assetPairs ?? throw new ArgumentNullException(nameof(assetPairs));
             _assets = assets ?? throw new ArgumentNullException(nameof(assets));
@@ -58,9 +54,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
         public async Task<List<HistoryEntry>> GetHistory(string clientId)
         {
             var records = new List<HistoryEntry>();
-            var walletCreds = await _walletCredentialsRepository.GetAsync(clientId);
-            var multisig = walletCreds?.MultiSig;
-
+            
             HistoryEntry[] cashOperations = null;
             HistoryEntry[] tradeOperations = null;
             HistoryEntry[] transferOperations = null;
@@ -68,29 +62,12 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
             HistoryEntry[] limitTradeEvents = null;
             Dictionary<string, IMarketOrder> marketOrders = null;
 
-            Task<IEnumerable<ICashInOutOperation>> cashOperationsRead;
-            Task<IEnumerable<IClientTrade>> tradeOperationsRead;
-            Task<IEnumerable<ITransferEvent>> transferOperationsRead;
-            Task<IEnumerable<ICashOutRequest>> cashOutAttemptsRead;
-            Task<IEnumerable<ILimitTradeEvent>> limiTradeEventsRead;
-            Task<IEnumerable<IMarketOrder>> marketOrdersRead;
-
-            if (!string.IsNullOrWhiteSpace(multisig))
-            {
-                cashOperationsRead = _cashOperationsRepository.GetByMultisigAsync(multisig);
-                tradeOperationsRead = _clientTradesRepository.GetByMultisigAsync(multisig);
-                transferOperationsRead = _transferEventsRepository.GetByMultisigAsync(multisig);
-            }
-            else
-            {
-                cashOperationsRead = _cashOperationsRepository.GetAsync(clientId);
-                tradeOperationsRead = _clientTradesRepository.GetAsync(clientId);
-                transferOperationsRead = _transferEventsRepository.GetAsync(clientId);
-            }
-
-            cashOutAttemptsRead = _cashOutAttemptRepository.GetRequestsAsync(clientId);
-            limiTradeEventsRead = _limitTradeEventsRepository.GetEventsAsync(clientId);
-            marketOrdersRead = _marketOrdersRepository.GetOrdersAsync(clientId);
+            var cashOperationsRead = _cashOperationsRepository.GetAsync(clientId);
+            var tradeOperationsRead = _clientTradesRepository.GetAsync(clientId);
+            var transferOperationsRead = _transferEventsRepository.GetAsync(clientId);            
+            var cashOutAttemptsRead = _cashOutAttemptRepository.GetRequestsAsync(clientId);
+            var limiTradeEventsRead = _limitTradeEventsRepository.GetEventsAsync(clientId);
+            var marketOrdersRead = _marketOrdersRepository.GetOrdersAsync(clientId);
 
             await Task.WhenAll(
                 cashOperationsRead.ContinueWith(t => cashOperations = t.Result.Select(RepoMapper.MapFrom).ToArray()),
