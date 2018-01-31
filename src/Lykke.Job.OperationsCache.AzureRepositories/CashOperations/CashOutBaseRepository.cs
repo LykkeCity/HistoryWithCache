@@ -2,6 +2,7 @@
 using Common;
 using Microsoft.WindowsAzure.Storage.Table;
 using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Lykke.Job.OperationsCache.Core.Domain;
 
 namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
 {
@@ -51,5 +52,15 @@ namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
         }
 
         public string PreviousId { get; set; }
+
+        public double FeeSize { get; set; }
+        public FeeType FeeType { get; set; }
+        public string FeeTypeText
+        {
+            get
+            {
+                return FeeType.ToString();
+            }
+        }
     }
 }
