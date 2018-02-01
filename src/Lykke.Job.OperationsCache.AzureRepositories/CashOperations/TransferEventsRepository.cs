@@ -44,10 +44,9 @@ namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
         public FeeType FeeType { get; set; }
         public string FeeTypeText
         {
-            get
-            {
-                return FeeType.ToString();
-            }
+            get => FeeType.ToString();
+
+            set => FeeType = Enum.TryParse(value, out FeeType tmpType) ? tmpType : FeeType.Unknown;
         }
 
         public static class ByClientId
