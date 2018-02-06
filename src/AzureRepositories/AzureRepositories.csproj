@@ -6,9 +6,6 @@
     <RootNamespace>AzureRepositories</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Lykke.AzureStorage" Version="5.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Bitcoin\" />
     <Folder Include="Exchange\" />
   </ItemGroup>
@@ -17,5 +14,8 @@
       <Project>{0415D4B4-5275-4B5C-AFD5-644572CD91CD}</Project>
       <Name>Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Lykke.AzureStorage" Version="5.0.1" />
   </ItemGroup>
 </Project>
