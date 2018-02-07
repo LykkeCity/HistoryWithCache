@@ -27,7 +27,7 @@ namespace Lykke.Service.OperationsCache.Controllers
         [ProducesResponseType(typeof(IEnumerable<HistoryEntry>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetHistory(string clientId)
         {
-            var history = await _historyCache.GetAllPagedAsync(clientId, 1);
+            var history = await _historyCache.GetRecordsByClient(clientId);
             return Ok(history);
         }
     }
