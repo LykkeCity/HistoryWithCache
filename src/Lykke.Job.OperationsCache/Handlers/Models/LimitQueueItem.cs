@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Exchange;
+using Lykke.Job.OperationsCache.Core.Exchange;
 using Newtonsoft.Json;
 
 namespace Lykke.Job.OperationsCache.Handlers.Models

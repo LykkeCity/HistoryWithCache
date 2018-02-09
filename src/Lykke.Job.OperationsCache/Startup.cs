@@ -5,9 +5,9 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AzureStorage.Tables;
 using Common.Log;
-using Core.Services;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
+using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Job.OperationsCache.Modules;
@@ -61,7 +61,10 @@ namespace Lykke.Job.OperationsCache
                 });
 
                 var builder = new ContainerBuilder();
+                
                 var appSettings = Configuration.LoadSettings<AppSettings>();
+
+                builder.Populate(services);
 
                 services.AddDistributedRedisCache(options =>
                 {
@@ -72,8 +75,6 @@ namespace Lykke.Job.OperationsCache
                 Log = CreateLogWithSlack(services, appSettings);
 
                 builder.RegisterModule(new JobModule(appSettings, Log));
-
-                builder.Populate(services);
 
                 ApplicationContainer = builder.Build();
 
