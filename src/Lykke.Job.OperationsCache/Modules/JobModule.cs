@@ -7,6 +7,7 @@ using Lykke.Job.OperationsCache.PeriodicalHandlers;
 using Lykke.Service.Assets.Client;
 using System;
 using System.Linq;
+using Autofac.Extensions.DependencyInjection;
 using Common;
 using Lykke.Job.OperationsCache.AzureRepositories.Bitcoin;
 using Lykke.Job.OperationsCache.AzureRepositories.CashOperations;
@@ -22,6 +23,7 @@ using Lykke.Job.OperationsCache.Services.InMemoryCache;
 using Lykke.Job.OperationsCache.Settings;
 using Lykke.Service.Assets.Client.Models;
 using Lykke.Service.Session.Client;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -29,15 +31,23 @@ namespace Lykke.Job.OperationsCache.Modules
     {
         private readonly IReloadingManager<AppSettings> _settings;
         private readonly ILog _log;
+        private readonly IServiceCollection _services;
 
         public JobModule(IReloadingManager<AppSettings> settings, ILog log)
         {
             _log = log;
             _settings = settings;
+            _services = new ServiceCollection();
         }
 
         protected override void Load(ContainerBuilder builder)
         {
+            _services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = _settings.CurrentValue.RedisSettings.Configuration;
+                options.InstanceName = _settings.CurrentValue.OperationsCacheJob.CacheInstanceName;
+            });
+            
             builder.RegisterInstance(_log)
                 .As<ILog>()
                 .SingleInstance();
@@ -97,10 +107,12 @@ namespace Lykke.Job.OperationsCache.Modules
                 .SingleInstance();
             
             builder.RegisterInstance(
-                new ClientSessionsClient(_settings.CurrentValue.SessionSettings.SessionServiceUrl, _log)
+                new ClientSessionsClient(_settings.CurrentValue.SessionServiceClient.SessionServiceUrl, _log)
             )
             .As<IClientSessionsClient>()
             .SingleInstance();
+            
+            builder.Populate(_services);
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
