@@ -97,7 +97,7 @@ namespace Lykke.Job.OperationsCache.Modules
                 .SingleInstance();
             
             builder.RegisterInstance(
-                new ClientSessionsClient(_settings.CurrentValue.SessionSettings.SessionServiceUrl, _log)
+                new ClientSessionsClient(_settings.CurrentValue.SessionServiceClient.SessionServiceUrl, _log)
             )
             .As<IClientSessionsClient>()
             .SingleInstance();
