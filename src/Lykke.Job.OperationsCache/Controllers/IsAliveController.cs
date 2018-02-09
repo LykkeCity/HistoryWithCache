@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Net;
-using Core.Services;
+using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Job.OperationsCache.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
