@@ -1,7 +1,7 @@
 ﻿using System;
 using MessagePack;
 
-namespace Lykke.Job.OperationsCache.Core.Domain
+namespace Lykke.Job.OperationsCache.Models
 {
     [MessagePackObject(keyAsPropertyName: true)]
     public class HistoryEntry

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureStorage;
 using AzureStorage.Tables.Templates.Index;
-using Lykke.Job.OperationsCache.Core.CashOperations;
-using Lykke.Job.OperationsCache.Core.Domain;
 using Microsoft.WindowsAzure.Storage.Table;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Lykke.Job.OperationsCache.Core.Domain;
 
-namespace Lykke.Job.OperationsCache.AzureRepositories.CashOperations
+namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
 {
     public class CashInOutOperationEntity : TableEntity, ICashInOutOperation
     {

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using AzureStorage;
-using Lykke.Job.OperationsCache.Core.CashOperations;
-using Lykke.Job.OperationsCache.Core.Offchain;
+using Core.CashOperations;
+using Core.Offchain;
 
-namespace Lykke.Job.OperationsCache.AzureRepositories.CashOperations
+namespace AzureRepositories.CashOperations
 {
     public class LimitTradeEventEntity : BaseEntity, ILimitTradeEvent
     {

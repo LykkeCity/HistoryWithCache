@@ -1,9 +1,10 @@
-﻿using System;
-using Common;
-using Lykke.Job.OperationsCache.Core.Exchange;
+﻿using Common;
+using Core.Exchange;
+using Lykke.Job.OperationsCache.Models;
 using Lykke.Service.Assets.Client.Models;
+using System;
 
-namespace Lykke.Job.OperationsCache.Services
+namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
     public static class Converter
     {

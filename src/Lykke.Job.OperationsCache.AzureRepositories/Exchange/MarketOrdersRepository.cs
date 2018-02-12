@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AzureStorage;
-using Lykke.Job.OperationsCache.Core.Exchange;
+using Core.Exchange;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Lykke.Job.OperationsCache.AzureRepositories.Exchange
+namespace AzureRepositories.Exchange
 {
     public class MarketOrderEntity : TableEntity, IMarketOrder
     {

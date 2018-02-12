@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AzureStorage;
-using Lykke.Job.OperationsCache.Core.CashOperations;
-using Lykke.Job.OperationsCache.Core.Domain;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
 using Microsoft.WindowsAzure.Storage.Table;
+using Lykke.Job.OperationsCache.Core.Domain;
 
-namespace Lykke.Job.OperationsCache.AzureRepositories.CashOperations
+namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
 {
 
     public class ClientTradeEntity : TableEntity, IClientTrade

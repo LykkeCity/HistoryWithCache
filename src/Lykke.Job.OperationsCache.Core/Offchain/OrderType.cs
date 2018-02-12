@@ -1,4 +1,4 @@
-﻿namespace Lykke.Job.OperationsCache.Core.Offchain
+﻿namespace Core.Offchain
 {
     public enum OrderType
     {

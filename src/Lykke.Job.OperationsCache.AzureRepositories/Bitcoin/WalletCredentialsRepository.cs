@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AzureStorage;
-using Lykke.Job.OperationsCache.Core.Bitcoin;
+using Core.BitCoin;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Lykke.Job.OperationsCache.AzureRepositories.Bitcoin
+namespace AzureRepositories.Bitcoin
 {
 
     public class WalletCredentialsEntity : TableEntity, IWalletCredentials

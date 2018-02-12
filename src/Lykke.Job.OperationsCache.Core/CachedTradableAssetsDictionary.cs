@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using Lykke.Service.Assets.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Common;
-using Lykke.Service.Assets.Client.Models;
 
-namespace Lykke.Job.OperationsCache.Core
+namespace Core
 {
     public class CachedTradableAssetsDictionary : CachedDataDictionary<string, Asset>
     {

@@ -13,16 +13,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Repositories", "2. Repos
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Tests", "3. Tests", "{AB790991-CEB2-44A5-9C0C-A2D26DB86D41}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\Lykke.Job.OperationsCache.Services\Lykke.Job.OperationsCache.Services.csproj", "{D42134F9-A73E-4890-966D-746FE732934E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Job.OperationsCache.Services", "src\Lykke.Job.OperationsCache.Services\Lykke.Job.OperationsCache.Services.csproj", "{D42134F9-A73E-4890-966D-746FE732934E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureRepositories", "src\Lykke.Job.OperationsCache.AzureRepositories\Lykke.Job.OperationsCache.AzureRepositories.csproj", "{1322B569-1032-4276-B86E-69F8BE3DC1F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Job.OperationsCache.AzureRepositories", "src\Lykke.Job.OperationsCache.AzureRepositories\Lykke.Job.OperationsCache.AzureRepositories.csproj", "{1322B569-1032-4276-B86E-69F8BE3DC1F7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Job.OperationsCache.Tests", "tests\Lykke.Job.OperationsCache.Tests\Lykke.Job.OperationsCache.Tests.csproj", "{AAC9F450-14D7-4482-BC12-7C55006864E2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{7E0D06B1-EF8C-49DB-BE1B-653B367A570E}"
-ProjectSection(SolutionItems) = preProject
-	.gitignore = .gitignore
-EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Contract", "4. Contract", "{579F7EFC-B394-4D2B-9F42-C1A4293F5C2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Job.OperationsCache.Contract", "contract\Lykke.Job.OperationsCache.Contract\Lykke.Job.OperationsCache.Contract.csproj", "{58FEDF76-9CC9-4B3B-877F-0795CE7C50F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Client", "5. Client", "{D03CBA9C-9BFD-456C-B019-2EEC3CB1B104}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Service.OperationsCache.Client", "client\Lykke.Service.OperationsCache.Client\Lykke.Service.OperationsCache.Client.csproj", "{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +53,14 @@ Global
 		{AAC9F450-14D7-4482-BC12-7C55006864E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAC9F450-14D7-4482-BC12-7C55006864E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAC9F450-14D7-4482-BC12-7C55006864E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58FEDF76-9CC9-4B3B-877F-0795CE7C50F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58FEDF76-9CC9-4B3B-877F-0795CE7C50F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58FEDF76-9CC9-4B3B-877F-0795CE7C50F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58FEDF76-9CC9-4B3B-877F-0795CE7C50F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +70,8 @@ Global
 		{D42134F9-A73E-4890-966D-746FE732934E} = {68994F01-8220-4B7C-9AB8-14E137C44AE5}
 		{1322B569-1032-4276-B86E-69F8BE3DC1F7} = {AA5ECC48-14C3-4BE7-AF0C-D59FCA2742C2}
 		{AAC9F450-14D7-4482-BC12-7C55006864E2} = {AB790991-CEB2-44A5-9C0C-A2D26DB86D41}
+		{58FEDF76-9CC9-4B3B-877F-0795CE7C50F9} = {579F7EFC-B394-4D2B-9F42-C1A4293F5C2B}
+		{A781CEAD-0F4D-4337-9DF1-C3EEAC709924} = {D03CBA9C-9BFD-456C-B019-2EEC3CB1B104}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2419990-C093-4EE2-AFE9-80857ECBB147}

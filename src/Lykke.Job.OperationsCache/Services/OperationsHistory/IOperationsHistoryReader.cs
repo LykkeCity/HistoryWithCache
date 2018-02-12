@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lykke.Job.OperationsCache.Core.Domain;
+using Lykke.Job.OperationsCache.Models;
 
-namespace Lykke.Job.OperationsCache.Core.Services
+namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
     public interface IOperationsHistoryReader
     {

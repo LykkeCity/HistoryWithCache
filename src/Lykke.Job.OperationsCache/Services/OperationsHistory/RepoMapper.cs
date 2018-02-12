@@ -1,8 +1,9 @@
-﻿using Lykke.Job.OperationsCache.Core.CashOperations;
-using Lykke.Job.OperationsCache.Core.Domain;
+﻿using Core.CashOperations;
+using Lykke.Job.OperationsCache.Models;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
 using Newtonsoft.Json;
 
-namespace Lykke.Job.OperationsCache.Core.Services
+namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
     public static class RepoMapper
     {

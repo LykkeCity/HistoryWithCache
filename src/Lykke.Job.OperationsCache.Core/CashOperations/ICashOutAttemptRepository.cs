@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Lykke.Job.OperationsCache.Core.CashOperations
+namespace Lykke.Service.OperationsRepository.Core.CashOperations
 {
     public interface ICashOutAttemptRepository : ICashOutBaseRepository
     {

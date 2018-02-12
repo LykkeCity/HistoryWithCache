@@ -11,7 +11,6 @@ using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Job.OperationsCache.Models;
 using Lykke.Job.OperationsCache.Modules;
-using Lykke.Job.OperationsCache.Settings;
 using Lykke.Logs;
 using Lykke.SettingsReader;
 using Lykke.SlackNotification.AzureQueue;
@@ -19,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
 
 namespace Lykke.Job.OperationsCache
 {
@@ -38,6 +38,7 @@ namespace Lykke.Job.OperationsCache
             Configuration = builder.Build();
             Environment = env;
         }
+
 
         private readonly IEnumerable<Type> _subscribers = new List<Type>
         {
@@ -61,14 +62,19 @@ namespace Lykke.Job.OperationsCache
                 });
 
                 var builder = new ContainerBuilder();
-                
                 var appSettings = Configuration.LoadSettings<AppSettings>();
 
+                services.AddDistributedRedisCache(options =>
+                {
+                    options.Configuration = appSettings.CurrentValue.RedisSettings.Configuration;
+                    options.InstanceName = appSettings.CurrentValue.OperationsCacheJob.CacheInstanceName;
+                });
+
                 Log = CreateLogWithSlack(services, appSettings);
-                
-                builder.Populate(services);
 
                 builder.RegisterModule(new JobModule(appSettings, Log));
+
+                builder.Populate(services);
 
                 ApplicationContainer = builder.Build();
 
@@ -194,7 +200,7 @@ namespace Lykke.Job.OperationsCache
             if (!string.IsNullOrEmpty(dbLogConnectionString) && !(dbLogConnectionString.StartsWith("${") && dbLogConnectionString.EndsWith("}")))
             {
                 var persistenceManager = new LykkeLogToAzureStoragePersistenceManager(
-                    AzureTableStorage<LogEntity>.Create(dbLogConnectionStringManager, "OperationsCacheJobLog", consoleLogger),
+                    AzureTableStorage<LogEntity>.Create(dbLogConnectionStringManager, "OperationsCacheLog", consoleLogger),
                     consoleLogger);
 
                 var slackNotificationsManager = new LykkeLogToAzureSlackNotificationsManager(slackService, consoleLogger);

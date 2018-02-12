@@ -1,7 +1,7 @@
-﻿using System;
-using Lykke.Job.OperationsCache.Core.Domain;
+﻿using Lykke.Job.OperationsCache.Core.Domain;
+using System;
 
-namespace Lykke.Job.OperationsCache.Core.CashOperations
+namespace Lykke.Service.OperationsRepository.Core.CashOperations
 {
     /// <summary>
     /// Base cash operation

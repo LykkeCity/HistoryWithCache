@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.CashOperations;
+using Lykke.Job.OperationsCache.Models;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Core.Exchange;
+using Newtonsoft.Json.Linq;
 using Common;
 using Common.Log;
-using Lykke.Job.OperationsCache.Core;
-using Lykke.Job.OperationsCache.Core.CashOperations;
-using Lykke.Job.OperationsCache.Core.Domain;
-using Lykke.Job.OperationsCache.Core.Exchange;
-using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Service.Assets.Client.Models;
-using Newtonsoft.Json.Linq;
+using Core;
 
-namespace Lykke.Job.OperationsCache.Services
+namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 {
     public class OperationsHistoryRepoReader : IOperationsHistoryReader
     {

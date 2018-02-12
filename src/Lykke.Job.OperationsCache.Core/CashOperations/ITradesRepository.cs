@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Lykke.Job.OperationsCache.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lykke.Job.OperationsCache.Core.Domain;
 
-namespace Lykke.Job.OperationsCache.Core.CashOperations
+namespace Lykke.Service.OperationsRepository.Core.CashOperations
 {
     public interface IClientTrade : IBaseCashBlockchainOperation
     {

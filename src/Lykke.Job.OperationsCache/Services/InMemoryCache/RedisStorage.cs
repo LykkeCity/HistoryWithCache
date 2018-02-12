@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lykke.Job.OperationsCache.Core.Domain;
-using Lykke.Job.OperationsCache.Core.Services;
+using Lykke.Job.OperationsCache.Models;
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
 

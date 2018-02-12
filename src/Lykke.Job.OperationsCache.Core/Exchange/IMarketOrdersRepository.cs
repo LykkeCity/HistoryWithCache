@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Lykke.Job.OperationsCache.Core.Exchange
+namespace Core.Exchange
 {
     public enum OrderAction
     {
