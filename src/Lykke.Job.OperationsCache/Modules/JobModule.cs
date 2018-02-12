@@ -1,32 +1,29 @@
 ﻿using Autofac;
-using AzureRepositories.CashOperations;
-using AzureStorage;
 using AzureStorage.Tables;
 using AzureStorage.Tables.Templates.Index;
 using Common.Log;
-using Core.CashOperations;
-using Lykke.Job.OperationsCache.Core.Services;
-using Lykke.Job.OperationsCache.Services;
 using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
-using Lykke.Job.OperationsCache.Services.InMemoryCache;
-using Lykke.Job.OperationsCache.Services.OperationsHistory;
-using Lykke.Service.OperationsRepository.AzureRepositories.CashOperations;
-using Lykke.Service.OperationsRepository.Core.CashOperations;
-using Core.BitCoin;
-using AzureRepositories.Bitcoin;
-using Core.Exchange;
-using AzureRepositories.Exchange;
 using Lykke.Service.Assets.Client;
 using System;
-using Core;
 using System.Linq;
+using Autofac.Extensions.DependencyInjection;
 using Common;
+using Lykke.Job.OperationsCache.AzureRepositories.Bitcoin;
+using Lykke.Job.OperationsCache.AzureRepositories.CashOperations;
+using Lykke.Job.OperationsCache.AzureRepositories.Exchange;
+using Lykke.Job.OperationsCache.Core;
+using Lykke.Job.OperationsCache.Core.Bitcoin;
+using Lykke.Job.OperationsCache.Core.CashOperations;
+using Lykke.Job.OperationsCache.Core.Exchange;
+using Lykke.Job.OperationsCache.Core.Services;
 using Lykke.Job.OperationsCache.Handlers;
+using Lykke.Job.OperationsCache.Services;
+using Lykke.Job.OperationsCache.Services.InMemoryCache;
+using Lykke.Job.OperationsCache.Settings;
 using Lykke.Service.Assets.Client.Models;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Redis;
-using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
+using Lykke.Service.Session.Client;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Job.OperationsCache.Modules
 {
@@ -34,15 +31,23 @@ namespace Lykke.Job.OperationsCache.Modules
     {
         private readonly IReloadingManager<AppSettings> _settings;
         private readonly ILog _log;
+        private readonly IServiceCollection _services;
 
         public JobModule(IReloadingManager<AppSettings> settings, ILog log)
         {
             _log = log;
             _settings = settings;
+            _services = new ServiceCollection();
         }
 
         protected override void Load(ContainerBuilder builder)
         {
+            _services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = _settings.CurrentValue.RedisSettings.Configuration;
+                options.InstanceName = _settings.CurrentValue.OperationsCacheJob.CacheInstanceName;
+            });
+            
             builder.RegisterInstance(_log)
                 .As<ILog>()
                 .SingleInstance();
@@ -56,40 +61,20 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterType<ShutdownManager>()
                 .As<IShutdownManager>();
+            
             RegisterPeriodicalHandlers(builder);
 
             builder.RegisterInstance(_settings.CurrentValue.OperationsCacheJob);
             builder.RegisterInstance(_settings.CurrentValue.RabbitMq);
 
-            if (_settings.CurrentValue.OperationsCacheJob.InMemory)
-            {
-                builder.RegisterType<InMemoryStorage>()
-                    .As<IStorage>()
-                    .SingleInstance();
-            }
-            else
-            {
-                builder.RegisterType<RedisStorage>()
-                    .As<IStorage>()
-                    .SingleInstance();
-            }
+            builder.RegisterType<RedisStorage>()
+                .As<IStorage>()
+                .SingleInstance();
 
             builder.RegisterType<HistoryCache>()
-                .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
                 .WithParameter("maxHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.MaxHistoryLengthPerClient)
                 .WithParameter("saveHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.SaveHistoryLengthPerClient)
                 .As<IHistoryCache>()
-                .SingleInstance();
-
-            builder.RegisterInstance(
-                AzureTableStorage<ClientSessionEntity>.Create(
-                    _settings.ConnectionString(x => x.SessionSettings.Sessions.ConnectionString),
-                    _settings.CurrentValue.SessionSettings.Sessions.TableName,
-                    _log))
-                .As<INoSQLTableStorage<ClientSessionEntity>>().SingleInstance();
-
-            builder.RegisterType<ClientSessionsRepository>()
-                .AsSelf()
                 .SingleInstance();
 
             builder.RegisterType<OperationsHistoryRepoReader>()
@@ -120,6 +105,14 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterType<LimitTradeQueue>()
                 .SingleInstance();
+            
+            builder.RegisterInstance(
+                new ClientSessionsClient(_settings.CurrentValue.SessionServiceClient.SessionServiceUrl, _log)
+            )
+            .As<IClientSessionsClient>()
+            .SingleInstance();
+            
+            builder.Populate(_services);
         }
 
         private void RegisterPeriodicalHandlers(ContainerBuilder builder)
@@ -204,11 +197,11 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.Register(x =>
             {
-                var sessionsRepository = x.Resolve<IComponentContext>().Resolve<ClientSessionsRepository>();
+                var sessionsClient = x.Resolve<IComponentContext>().Resolve<IClientSessionsClient>();
 
                 return new CachedSessionsDictionary
                 (
-                    async () => (await sessionsRepository.GetClientsIds()).Distinct().ToDictionary(itm => itm)
+                    async () => (await sessionsClient.GetActiveClientIdsAsync()).ToDictionary(itm => itm)
                 );
 
             }).SingleInstance();

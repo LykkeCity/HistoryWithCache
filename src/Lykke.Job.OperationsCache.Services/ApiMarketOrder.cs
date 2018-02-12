@@ -1,4 +1,4 @@
-﻿namespace Lykke.Job.OperationsCache.Models
+﻿namespace Lykke.Job.OperationsCache.Services
 {
     public class ApiMarketOrder
     {

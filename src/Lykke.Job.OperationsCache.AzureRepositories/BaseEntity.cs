@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
-using System.Reflection;
 
-namespace AzureRepositories
+namespace Lykke.Job.OperationsCache.AzureRepositories
 {
     public class BaseEntity : TableEntity
     {

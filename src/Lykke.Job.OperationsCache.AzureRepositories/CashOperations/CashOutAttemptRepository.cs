@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AzureStorage;
 using Common;
-using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Lykke.Job.OperationsCache.Core.CashOperations;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
+namespace Lykke.Job.OperationsCache.AzureRepositories.CashOperations
 {
     public class CashOutAttemptEntity : CashOutBaseEntity
     {

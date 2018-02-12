@@ -2,6 +2,6 @@
 {
     public class SlackNotificationsSettings
     {
-        public OperationsCache.Settings.SlackNotifications.AzureQueuePublicationSettings AzureQueue { get; set; }
+        public AzureQueuePublicationSettings AzureQueue { get; set; }
     }
 }

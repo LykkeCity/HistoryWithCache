@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common;
 
-namespace Core
+namespace Lykke.Job.OperationsCache.Core
 {
     public class CachedSessionsDictionary : CachedDataDictionary<string, string>
     {

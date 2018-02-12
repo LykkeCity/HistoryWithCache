@@ -1,9 +1,9 @@
-﻿using Core.Offchain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Lykke.Job.OperationsCache.Core.Offchain;
 
-namespace Core.CashOperations
+namespace Lykke.Job.OperationsCache.Core.CashOperations
 {
     public interface ILimitTradeEvent
     {

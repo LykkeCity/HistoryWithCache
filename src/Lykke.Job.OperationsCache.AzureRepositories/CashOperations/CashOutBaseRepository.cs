@@ -1,10 +1,10 @@
 ﻿using System;
 using Common;
-using Microsoft.WindowsAzure.Storage.Table;
-using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Lykke.Job.OperationsCache.Core.CashOperations;
 using Lykke.Job.OperationsCache.Core.Domain;
+using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
+namespace Lykke.Job.OperationsCache.AzureRepositories.CashOperations
 {
     public abstract class CashOutBaseEntity : TableEntity, ICashOutRequest
     {

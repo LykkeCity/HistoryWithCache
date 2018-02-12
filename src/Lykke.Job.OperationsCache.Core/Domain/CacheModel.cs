@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Lykke.Job.OperationsCache.Models;
 using MessagePack;
 
-namespace Lykke.Job.OperationsCache.Services.InMemoryCache
+namespace Lykke.Job.OperationsCache.Core.Domain
 {
     [MessagePackObject(keyAsPropertyName: true)]
     public class CacheModel

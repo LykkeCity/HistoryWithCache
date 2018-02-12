@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Service.Assets.Client.Models;
 
-namespace Core.BitCoin
+namespace Lykke.Job.OperationsCache.Core.Bitcoin
 {
     public interface IWalletCredentials
     {

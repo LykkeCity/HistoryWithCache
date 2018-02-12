@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Lykke.Job.OperationsCache.Core.Domain
+﻿namespace Lykke.Job.OperationsCache.Core.Domain
 {
     public enum FeeType
     {

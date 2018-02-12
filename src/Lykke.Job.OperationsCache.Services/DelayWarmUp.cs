@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using Core;
-using System.Reactive.Linq;
+using Lykke.Job.OperationsCache.Core;
+using Lykke.Job.OperationsCache.Core.Services;
 
 namespace Lykke.Job.OperationsCache.Services
 {
