@@ -8,7 +8,7 @@ namespace Lykke.Job.OperationsCache.Settings
     {
         public OperationsCacheSettings OperationsCacheJob { get; set; }
         public SlackNotificationsSettings SlackNotifications { get; set; }
-        public SessionServiceSettings SessionServiceClient { get; set; }
+        public SessionServiceSettings SessionSettings { get; set; }
         public AssetsServiceClientSettings AssetsServiceClient { get; set; }
         public RabbitMqSettings RabbitMq { get; set; }
         public RedisSettings RedisSettings { get; set; }
