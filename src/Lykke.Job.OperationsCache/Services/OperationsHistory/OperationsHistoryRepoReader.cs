@@ -28,6 +28,9 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 
         private IReadOnlyDictionary<string, AssetPair> _assetPairValues;
         private IReadOnlyDictionary<string, Asset> _assetValues;
+        private readonly TimeSpan _noAssetsExpirePeriod = TimeSpan.FromDays(1);
+        private readonly Dictionary<string, DateTime> _noAssetPairs = new Dictionary<string, DateTime>();
+        private readonly Dictionary<string, DateTime> _noAssets = new Dictionary<string, DateTime>();
 
         public OperationsHistoryRepoReader(
             ICashOperationsRepository cashOperationsRepository,
@@ -124,9 +127,17 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
 
                     if (asset == null)
                     {
-                        await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
-                            $"Unable to find asset in dictionary {tradeWithOrderId?.Trade?.Currency} for client {tradeWithOrderId?.Trade?.ClientId}");
-                        continue;
+                        if (!_noAssets.ContainsKey(tradeWithOrderId.Trade.Currency))
+                        {
+                            _noAssets.Add(tradeWithOrderId.Trade.Currency, DateTime.UtcNow.Add(_noAssetsExpirePeriod));
+                                
+                            await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
+                                $"Unable to find asset in dictionary {tradeWithOrderId?.Trade?.Currency} for client {tradeWithOrderId?.Trade?.ClientId}");
+                            continue;
+                        }
+
+                        if (_noAssets[tradeWithOrderId.Trade.Currency] > DateTime.UtcNow)
+                            _noAssets.Remove(tradeWithOrderId.Trade.Currency);
                     }
 
                     if (marketOrders.TryGetValue(tradeWithOrderId.MarketOrderId, out var marketOrder))
@@ -145,8 +156,15 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                         }
                         else
                         {
-                            await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
+                            if (!_noAssetPairs.ContainsKey(marketOrder.AssetPairId))
+                            {
+                                _noAssetPairs.Add(marketOrder.AssetPairId, DateTime.UtcNow.Add(_noAssetsExpirePeriod));
+                                
+                                await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
                                 $"Unable to find assetPair in dictionary {marketOrder?.AssetPairId} for client {tradeWithOrderId?.Trade?.ClientId}");
+                            }
+                            else if (_noAssetPairs[marketOrder.AssetPairId] > DateTime.UtcNow)
+                                    _noAssetPairs.Remove(marketOrder.AssetPairId);
                         }
                     }
                 }
