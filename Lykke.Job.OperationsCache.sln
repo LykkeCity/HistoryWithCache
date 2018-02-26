@@ -30,8 +30,6 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Service.OperationsCache.Tests", "tests\Lykke.Service.OperationsCache.Tests\Lykke.Service.OperationsCache.Tests.csproj", "{EBC1A4FA-3E0F-489B-9E04-831CAA24D30D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,10 +64,6 @@ Global
 		{64884D5D-E89E-4406-AA98-6392D5B0827B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64884D5D-E89E-4406-AA98-6392D5B0827B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64884D5D-E89E-4406-AA98-6392D5B0827B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBC1A4FA-3E0F-489B-9E04-831CAA24D30D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBC1A4FA-3E0F-489B-9E04-831CAA24D30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBC1A4FA-3E0F-489B-9E04-831CAA24D30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBC1A4FA-3E0F-489B-9E04-831CAA24D30D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,7 +74,6 @@ Global
 		{1322B569-1032-4276-B86E-69F8BE3DC1F7} = {AA5ECC48-14C3-4BE7-AF0C-D59FCA2742C2}
 		{AAC9F450-14D7-4482-BC12-7C55006864E2} = {AB790991-CEB2-44A5-9C0C-A2D26DB86D41}
 		{A781CEAD-0F4D-4337-9DF1-C3EEAC709924} = {D03CBA9C-9BFD-456C-B019-2EEC3CB1B104}
-		{EBC1A4FA-3E0F-489B-9E04-831CAA24D30D} = {AB790991-CEB2-44A5-9C0C-A2D26DB86D41}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2419990-C093-4EE2-AFE9-80857ECBB147}
