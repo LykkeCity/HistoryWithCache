@@ -5,8 +5,15 @@ using AzureStorage.Tables;
 using AzureStorage.Tables.Templates.Index;
 using Common.Log;
 using Core.CashOperations;
+using Lykke.Job.OperationsCache.Core.Services;
+using Lykke.Job.OperationsCache.Services;
 using Lykke.SettingsReader;
 using Lykke.Job.OperationsCache.PeriodicalHandlers;
+using Lykke.Job.OperationsCache.Services.InMemoryCache;
+using Lykke.Job.OperationsCache.Services.OperationsHistory;
+using Lykke.Service.OperationsRepository.AzureRepositories.CashOperations;
+using Lykke.Service.OperationsRepository.Core.CashOperations;
+using Core.BitCoin;
 using AzureRepositories.Bitcoin;
 using Core.Exchange;
 using AzureRepositories.Exchange;
@@ -14,14 +21,11 @@ using Lykke.Service.Assets.Client;
 using System;
 using Core;
 using System.Linq;
-using AzureRepositories.Sessions;
 using Common;
-using Core.Bitcoin;
-using Core.Services;
 using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Service.Assets.Client.Models;
-using Services;
-using Services.InMemoryCache;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Redis;
 using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
 
 namespace Lykke.Job.OperationsCache.Modules
@@ -52,15 +56,23 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterType<ShutdownManager>()
                 .As<IShutdownManager>();
-            
             RegisterPeriodicalHandlers(builder);
 
             builder.RegisterInstance(_settings.CurrentValue.OperationsCacheJob);
             builder.RegisterInstance(_settings.CurrentValue.RabbitMq);
 
-            builder.RegisterType<RedisStorage>()
-                .As<IStorage>()
-                .SingleInstance();
+            if (_settings.CurrentValue.OperationsCacheJob.InMemory)
+            {
+                builder.RegisterType<InMemoryStorage>()
+                    .As<IStorage>()
+                    .SingleInstance();
+            }
+            else
+            {
+                builder.RegisterType<RedisStorage>()
+                    .As<IStorage>()
+                    .SingleInstance();
+            }
 
             builder.RegisterType<HistoryCache>()
                 .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)

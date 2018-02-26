@@ -29,10 +29,11 @@ namespace Lykke.Service.OperationsCache.Client
 
         public async Task<IEnumerable<HistoryClientEntry>> GetHistoryByClientId(string clientId)
         {
-            var operations = await _apiClient.GetHistoryAsync(clientId);
-            return operations == null 
-                ? new List<HistoryClientEntry>() 
-                : operations.Select(x => x.FromApiModel());
+            var response = await _apiClient.GetHistoryWithHttpMessagesAsync(clientId);
+
+            var operations = response.Body;
+
+            return operations == null ? new List<HistoryClientEntry>() : operations.Select(x => x.FromApiModel());
         }
     }
 }

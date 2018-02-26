@@ -3,9 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Common.Log;
+using Lykke.Job.OperationsCache.Services;
 using System.Collections.Generic;
-using AzureRepositories.Sessions;
-using Core.Services;
 
 namespace Lykke.Job.OperationsCache.PeriodicalHandlers
 {
