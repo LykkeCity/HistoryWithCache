@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Common.Log;
-using Lykke.Job.OperationsCache.Core.Services;
+using Core.Services;
 using Lykke.Job.OperationsCache.Handlers.Models;
 using Lykke.Job.OperationsCache.Settings.JobSettings;
 using Lykke.RabbitMqBroker;

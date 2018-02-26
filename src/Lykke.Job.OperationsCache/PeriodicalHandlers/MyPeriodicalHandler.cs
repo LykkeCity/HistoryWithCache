@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Common;
 using Common.Log;
 using System.Collections.Generic;
-using Lykke.Job.OperationsCache.Core;
-using Lykke.Job.OperationsCache.Core.Services;
+using AzureRepositories.Sessions;
+using Core.Services;
 
 namespace Lykke.Job.OperationsCache.PeriodicalHandlers
 {
@@ -14,11 +14,11 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
         private readonly IList<string> _excludeList;
         private readonly ILog _log;
         private readonly IHistoryCache _historyCache;
-        private readonly CachedSessionsDictionary _cachedSessionsDictionary;
+        private readonly ClientSessionsRepository _clientSessionsRepository;
         private static bool _inProcess;
         
         public MyPeriodicalHandler(
-            CachedSessionsDictionary cachedSessionsDictionary,
+            ClientSessionsRepository clientSessionsRepository,
             IHistoryCache historyCache,
             ILog log,
             TimeSpan expirationPeriod,
@@ -27,7 +27,7 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
         {
             _excludeList = excludeList;
             _log = log ?? throw new ArgumentNullException(nameof(log));
-            _cachedSessionsDictionary = cachedSessionsDictionary ?? throw new ArgumentNullException(nameof(cachedSessionsDictionary));
+            _clientSessionsRepository = clientSessionsRepository ?? throw new ArgumentNullException(nameof(_clientSessionsRepository));
             _historyCache = historyCache ?? throw new ArgumentNullException(nameof(historyCache));            
         }
 
@@ -41,7 +41,7 @@ namespace Lykke.Job.OperationsCache.PeriodicalHandlers
                 _inProcess = true;
 
                 var timestamp = DateTime.UtcNow;
-                var clientsIds = (await _cachedSessionsDictionary.Values()).Where(id => !_excludeList.Contains(id)).ToList();
+                var clientsIds = (await _clientSessionsRepository.GetClientsIds()).Where(id => !_excludeList.Contains(id)).ToList();
 
                 await _log.WriteInfoAsync(GetComponentName(), "Updating cache", $"Processing {clientsIds.Count} active clients.");
                 foreach (var clientId in clientsIds)

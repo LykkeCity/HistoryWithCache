@@ -57,9 +57,8 @@ namespace Lykke.Service.OperationsCache
 
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.Populate(services);
                 builder.RegisterModule(new ServiceModule(appSettings, Log));
-                
+                builder.Populate(services);
                 ApplicationContainer = builder.Build();
 
                 return new AutofacServiceProvider(ApplicationContainer);

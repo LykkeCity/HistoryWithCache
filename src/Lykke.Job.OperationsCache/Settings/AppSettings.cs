@@ -1,6 +1,7 @@
-﻿using Lykke.Job.OperationsCache.Settings.ClientSettings;
+﻿using Core.Settings;
+using Core.Settings.Sessions;
+using Core.Settings.SlackNotifications;
 using Lykke.Job.OperationsCache.Settings.JobSettings;
-using Lykke.Job.OperationsCache.Settings.SlackNotifications;
 
 namespace Lykke.Job.OperationsCache.Settings
 {
