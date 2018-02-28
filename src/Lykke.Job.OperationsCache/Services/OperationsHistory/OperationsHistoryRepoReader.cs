@@ -136,7 +136,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                             continue;
                         }
 
-                        if (_noAssets[tradeWithOrderId.Trade.Currency] > DateTime.UtcNow)
+                        if (_noAssets[tradeWithOrderId.Trade.Currency] <= DateTime.UtcNow)
                             _noAssets.Remove(tradeWithOrderId.Trade.Currency);
                     }
 
@@ -163,7 +163,7 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                                 await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
                                 $"Unable to find assetPair in dictionary {marketOrder?.AssetPairId} for client {tradeWithOrderId?.Trade?.ClientId}");
                             }
-                            else if (_noAssetPairs[marketOrder.AssetPairId] > DateTime.UtcNow)
+                            else if (_noAssetPairs[marketOrder.AssetPairId] <= DateTime.UtcNow)
                                     _noAssetPairs.Remove(marketOrder.AssetPairId);
                         }
                     }
