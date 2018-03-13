@@ -29,8 +29,8 @@
     <!-- #if rabbitpub || rabbitsub -->
     <PackageReference Include="Lykke.RabbitMqBroker" Version="6.0.0" />
     <PackageReference Include="Lykke.Service.Assets.Client" Version="2.1.0.28" />
-    <PackageReference Include="Lykke.Service.Session.Client" Version="1.3.0" />
     <!-- #endif -->
+    <PackageReference Include="Lykke.Service.Session.Client" Version="1.3.0" />
     <PackageReference Include="Lykke.SettingsReader" Version="1.1.4" />
     <PackageReference Include="Lykke.SlackNotification.AzureQueue" Version="2.0.1" />
     <PackageReference Include="MessagePack" Version="1.7.3.4" />
