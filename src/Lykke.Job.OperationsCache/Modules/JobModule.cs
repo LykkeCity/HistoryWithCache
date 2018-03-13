@@ -92,8 +92,8 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterInstance<IAssetsService>(
                 new AssetsService(new Uri(_settings.CurrentValue.AssetsServiceClient.ServiceUrl)));
-            
-            builder.RegisterRedisClientSession(_settings.CurrentValue.SessionSettings);
+
+            builder.RegisterClientSessionClient(_settings.CurrentValue.SessionServiceClient.SessionServiceUrl, _log);
 
             RegisterRepositories(builder);
 
