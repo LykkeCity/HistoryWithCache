@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Lykke.Service.OperationsCache.AutorestClient
+namespace Lykke.Job.OperationsCache.AutorestClient
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;

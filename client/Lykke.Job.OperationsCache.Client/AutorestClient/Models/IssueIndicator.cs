@@ -4,27 +4,28 @@
 // regenerated.
 // </auto-generated>
 
-namespace Lykke.Service.OperationsCache.AutorestClient.Models
+namespace Lykke.Job.OperationsCache.AutorestClient.Models
 {
     using Newtonsoft.Json;
     using System.Linq;
 
-    public partial class ErrorResponse
+    public partial class IssueIndicator
     {
         /// <summary>
-        /// Initializes a new instance of the ErrorResponse class.
+        /// Initializes a new instance of the IssueIndicator class.
         /// </summary>
-        public ErrorResponse()
+        public IssueIndicator()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the ErrorResponse class.
+        /// Initializes a new instance of the IssueIndicator class.
         /// </summary>
-        public ErrorResponse(string errorMessage = default(string))
+        public IssueIndicator(string type = default(string), string value = default(string))
         {
-            ErrorMessage = errorMessage;
+            Type = type;
+            Value = value;
             CustomInit();
         }
 
@@ -35,8 +36,13 @@ namespace Lykke.Service.OperationsCache.AutorestClient.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "ErrorMessage")]
-        public string ErrorMessage { get; set; }
+        [JsonProperty(PropertyName = "Type")]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "Value")]
+        public string Value { get; set; }
 
     }
 }

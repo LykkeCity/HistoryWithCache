@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Job.OperationsCache.C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Client", "5. Client", "{D03CBA9C-9BFD-456C-B019-2EEC3CB1B104}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Service.OperationsCache.Client", "client\Lykke.Service.OperationsCache.Client\Lykke.Service.OperationsCache.Client.csproj", "{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Job.OperationsCache.Client", "client\Lykke.Job.OperationsCache.Client\Lykke.Job.OperationsCache.Client.csproj", "{A781CEAD-0F4D-4337-9DF1-C3EEAC709924}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

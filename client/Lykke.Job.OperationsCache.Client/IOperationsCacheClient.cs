@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Lykke.Service.OperationsCache.Client.Models;
+using Lykke.Job.OperationsCache.Client.Models;
 using System.Collections.Generic;
 
-namespace Lykke.Service.OperationsCache.Client
+namespace Lykke.Job.OperationsCache.Client
 {
     public interface IOperationsCacheClient
     {

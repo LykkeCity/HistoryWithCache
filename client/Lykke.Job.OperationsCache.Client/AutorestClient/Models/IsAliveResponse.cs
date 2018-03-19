@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Lykke.Service.OperationsCache.AutorestClient.Models
+namespace Lykke.Job.OperationsCache.AutorestClient.Models
 {
     using Newtonsoft.Json;
     using System.Collections;

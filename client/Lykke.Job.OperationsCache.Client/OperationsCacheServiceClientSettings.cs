@@ -1,6 +1,6 @@
 using System;
 
-namespace Lykke.Service.OperationsCache.Client 
+namespace Lykke.Job.OperationsCache.Client 
 {
     public class OperationsCacheServiceClientSettings 
     {
