@@ -5,7 +5,7 @@
     <Version>1.0.1</Version>
     <Authors>Lykke</Authors>
     <Company>Lykke</Company>
-    <Product>Lykke.Service.OperationsCache</Product>
+    <Product>Lykke.Job.OperationsCache</Product>
     <Description>Client for Lykke.Service.OperationsCache API</Description>
     <PackageLicenseUrl>https://github.com/LykkeCity/Lykke.Service.OperationsCache/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/LykkeCity/Lykke.Service.OperationsCache</PackageProjectUrl>
