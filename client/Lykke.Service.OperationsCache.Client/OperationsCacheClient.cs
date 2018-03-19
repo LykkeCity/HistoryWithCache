@@ -35,5 +35,10 @@ namespace Lykke.Service.OperationsCache.Client
 
             return operations == null ? new List<HistoryClientEntry>() : operations.Select(x => x.FromApiModel());
         }
+
+        public Task RemoveCashoutIfExists(string clientId, string operationId)
+        {
+            return _apiClient.DeleteCashOperationWithHttpMessagesAsync(clientId, operationId);
+        }
     }
 }

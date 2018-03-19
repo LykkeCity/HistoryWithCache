@@ -7,5 +7,6 @@ namespace Lykke.Service.OperationsCache.Client
     public interface IOperationsCacheClient
     {
         Task<IEnumerable<HistoryClientEntry>>GetHistoryByClientId(string clientId);
+        Task RemoveCashoutIfExists(string clientId, string operationId);
     }
 }
