@@ -7,4 +7,4 @@
 # Autorest version >= 1.2.2 - https://www.npmjs.com/package/autorest
 
 # Run this file if you use PowerShell directly
-autorest --input-file=http://localhost:5000/swagger/v1/swagger.json --csharp --output-folder=./AutorestClient --namespace=Lykke.Service.OperationsCache.Client.AutorestClient
+autorest --input-file=http://localhost:5000/swagger/v1/swagger.json --csharp --output-folder=./AutorestClient --namespace=Lykke.Job.OperationsCache.Client.AutorestClient

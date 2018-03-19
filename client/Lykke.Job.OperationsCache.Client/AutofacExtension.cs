@@ -2,7 +2,7 @@
 using Autofac;
 using Common.Log;
 
-namespace Lykke.Service.OperationsCache.Client
+namespace Lykke.Job.OperationsCache.Client
 {
     public static class AutofacExtension
     {

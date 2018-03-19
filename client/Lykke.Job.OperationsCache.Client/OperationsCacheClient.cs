@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Log;
-using Lykke.Service.OperationsCache.AutorestClient;
-using Lykke.Service.OperationsCache.Client.Models;
+using Lykke.Job.OperationsCache.AutorestClient;
+using Lykke.Job.OperationsCache.Client.Models;
 using System.Collections.Generic;
 
-namespace Lykke.Service.OperationsCache.Client
+namespace Lykke.Job.OperationsCache.Client
 {
     public class OperationsCacheClient : IOperationsCacheClient, IDisposable
     {
