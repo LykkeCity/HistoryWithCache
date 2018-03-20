@@ -293,5 +293,26 @@ namespace Lykke.Service.OperationsRepository.AzureRepositories.CashOperations
         {
             return _tableStorage.GetDataByChunksAsync(chunk);
         }
+
+        public async Task RemoveIfExistsAsync(string clientId, string id)
+        {
+            var partitionkey = CashInOutOperationEntity.ByClientId.GeneratePartitionKey(clientId);
+            var rowKey = CashInOutOperationEntity.ByClientId.GenerateRowKey(id);
+
+            var record = await _tableStorage.GetDataAsync(partitionkey, rowKey);
+
+            if (record == null)
+                return;
+            
+            await _tableStorage.DeleteIfExistAsync(partitionkey, rowKey);
+            
+            if (record.Multisig != null)
+            {
+                var multisigPartitionkey = CashInOutOperationEntity.ByMultisig.GeneratePartitionKey(record.Multisig);
+                var multisigRowKey = CashInOutOperationEntity.ByMultisig.GenerateRowKey(id);
+                
+                await _tableStorage.DeleteIfExistAsync(multisigPartitionkey, multisigRowKey);
+            }
+        }
     }
 }

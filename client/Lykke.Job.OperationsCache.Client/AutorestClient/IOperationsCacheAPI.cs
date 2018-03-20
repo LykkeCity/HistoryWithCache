@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Lykke.Service.OperationsCache.AutorestClient
+namespace Lykke.Job.OperationsCache.AutorestClient
 {
     using Microsoft.Rest;
     using Models;
@@ -51,6 +51,18 @@ namespace Lykke.Service.OperationsCache.AutorestClient
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<IList<HistoryEntry>>> GetHistoryWithHttpMessagesAsync(string clientId = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='clientId'>
+        /// </param>
+        /// <param name='operationId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> DeleteCashOperationWithHttpMessagesAsync(string clientId = default(string), string operationId = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

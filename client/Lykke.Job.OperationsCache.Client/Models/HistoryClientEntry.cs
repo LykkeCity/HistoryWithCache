@@ -1,6 +1,6 @@
-﻿using Lykke.Service.OperationsCache.AutorestClient.Models;
+﻿using Lykke.Job.OperationsCache.AutorestClient.Models;
 
-namespace Lykke.Service.OperationsCache.Client.Models
+namespace Lykke.Job.OperationsCache.Client.Models
 {
     /// <summary>
     /// Represents history record

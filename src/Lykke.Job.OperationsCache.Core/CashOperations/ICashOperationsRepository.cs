@@ -61,5 +61,6 @@ namespace Lykke.Service.OperationsRepository.Core.CashOperations
         Task<IEnumerable<ICashInOutOperation>> GetByMultisigAsync(string multisig);
         Task<IEnumerable<ICashInOutOperation>> GetByMultisigsAsync(string[] multisigs);
         Task GetDataByChunksAsync(Func<IEnumerable<ICashInOutOperation>, Task> chunk);
+        Task RemoveIfExistsAsync(string clientId, string operationId);
     }
 }
