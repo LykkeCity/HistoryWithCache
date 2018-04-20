@@ -25,8 +25,6 @@ using Common;
 using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Service.Assets.Client.Models;
 using Lykke.Service.Session.Client;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Redis;
 using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
 
 namespace Lykke.Job.OperationsCache.Modules
@@ -77,8 +75,10 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterType<HistoryCache>()
                 .WithParameter("valuesPerPage", _settings.CurrentValue.OperationsCacheJob.ItemsPerPage)
-                .WithParameter("maxHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.MaxHistoryLengthPerClient)
-                .WithParameter("saveHistoryLengthPerClient", _settings.CurrentValue.OperationsCacheJob.SaveHistoryLengthPerClient)
+                .WithParameter("maxHistoryLengthPerClient",
+                    _settings.CurrentValue.OperationsCacheJob.MaxHistoryLengthPerClient)
+                .WithParameter("saveHistoryLengthPerClient",
+                    _settings.CurrentValue.OperationsCacheJob.SaveHistoryLengthPerClient)
                 .As<IHistoryCache>()
                 .SingleInstance();
 
@@ -132,33 +132,48 @@ namespace Lykke.Job.OperationsCache.Modules
         {
             builder.RegisterInstance<ICashOperationsRepository>(
                 new CashOperationsRepository(
-                    AzureTableStorage<CashInOutOperationEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOperationsConnString), "OperationsCash", _log),
-                    AzureTableStorage<AzureIndex>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOperationsConnString), "OperationsCash", _log)));
+                    AzureTableStorage<CashInOutOperationEntity>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOperationsConnString),
+                        "OperationsCash", _log),
+                    AzureTableStorage<AzureIndex>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOperationsConnString),
+                        "OperationsCash", _log)));
 
             builder.RegisterInstance<IClientTradesRepository>(
                 new ClientTradesRepository(
-                    AzureTableStorage<ClientTradeEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientTradesConnString), "Trades", _log)));
+                    AzureTableStorage<ClientTradeEntity>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientTradesConnString), "Trades",
+                        _log)));
 
             builder.RegisterInstance<ITransferEventsRepository>(
                 new TransferEventsRepository(
-                    AzureTableStorage<TransferEventEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.TransferConnString), "Transfers", _log),
-                    AzureTableStorage<AzureIndex>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.TransferConnString), "Transfers", _log)));
+                    AzureTableStorage<TransferEventEntity>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.TransferConnString), "Transfers", _log),
+                    AzureTableStorage<AzureIndex>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.TransferConnString), "Transfers",
+                        _log)));
 
             builder.RegisterInstance<ICashOutAttemptRepository>(
                 new CashOutAttemptRepository(
-                    AzureTableStorage<CashOutAttemptEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOutAttemptConnString), "CashOutAttempt", _log)));
+                    AzureTableStorage<CashOutAttemptEntity>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.CashOutAttemptConnString),
+                        "CashOutAttempt", _log)));
 
             builder.RegisterInstance<ILimitTradeEventsRepository>(
                 new LimitTradeEventsRepository(
-                    AzureTableStorage<LimitTradeEventEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.LimitTradesConnString), "LimitTradeEvents", _log)));
+                    AzureTableStorage<LimitTradeEventEntity>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.LimitTradesConnString),
+                        "LimitTradeEvents", _log)));
 
             builder.RegisterInstance<IWalletCredentialsRepository>(
                 new WalletCredentialsRepository(
-                    AzureTableStorage<WalletCredentialsEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientPersonalInfoConnString),
+                    AzureTableStorage<WalletCredentialsEntity>.Create(
+                        _settings.ConnectionString(x => x.OperationsCacheJob.Db.ClientPersonalInfoConnString),
                         "WalletCredentials", _log)));
 
             builder.RegisterInstance<IMarketOrdersRepository>(
-                new MarketOrdersRepository(AzureTableStorage<MarketOrderEntity>.Create(_settings.ConnectionString(x => x.OperationsCacheJob.Db.MarketOrdersConnString),
+                new MarketOrdersRepository(AzureTableStorage<MarketOrderEntity>.Create(
+                    _settings.ConnectionString(x => x.OperationsCacheJob.Db.MarketOrdersConnString),
                     "MarketOrders", _log)));
         }
 
@@ -170,9 +185,9 @@ namespace Lykke.Job.OperationsCache.Modules
 
                 return new CachedAssetsDictionary
                 (
-                    async () => (await assetsService.AssetGetAllAsync(includeNonTradable: true)).ToDictionary(itm => itm.Id)
+                    async () =>
+                        (await assetsService.AssetGetAllAsync(includeNonTradable: true)).ToDictionary(itm => itm.Id)
                 );
-
             }).SingleInstance();
 
             builder.Register(x =>
@@ -181,21 +196,19 @@ namespace Lykke.Job.OperationsCache.Modules
 
                 return new CachedTradableAssetsDictionary
                 (
-                    async () => (await assetsService.AssetGetAllAsync(includeNonTradable: false)).ToDictionary(itm => itm.Id)
+                    async () =>
+                        (await assetsService.AssetGetAllAsync(includeNonTradable: false)).ToDictionary(itm => itm.Id)
                 );
-
             }).SingleInstance();
 
             builder.Register(x =>
             {
-
                 var assetsService = x.Resolve<IComponentContext>().Resolve<IAssetsService>();
 
                 return new CachedDataDictionary<string, AssetPair>
                 (
                     async () => (await assetsService.AssetPairGetAllAsync()).ToDictionary(itm => itm.Id)
                 );
-
             }).SingleInstance();
 
             builder.Register(x =>
@@ -204,9 +217,9 @@ namespace Lykke.Job.OperationsCache.Modules
 
                 return new CachedSessionsDictionary
                 (
-                    async () => (await sessionsRepository.GetClientsIds()).Distinct().ToDictionary(itm => itm)
+                    async () => (await sessionsRepository.GetClientsIds()).Distinct()
+                        .Where(id => !string.IsNullOrEmpty(id)).ToDictionary(itm => itm)
                 );
-
             }).SingleInstance();
         }
     }
