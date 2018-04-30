@@ -130,8 +130,6 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                     {
                         if (_noAssets.TryAdd(tradeWithOrderId.Trade.Currency, DateTime.UtcNow.Add(_noAssetsExpirePeriod)))
                         {
-                            _noAssets.Add(tradeWithOrderId.Trade.Currency, DateTime.UtcNow.Add(_noAssetsExpirePeriod));
-                                
                             await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
                                 $"Unable to find asset in dictionary {tradeWithOrderId?.Trade?.Currency} for client {tradeWithOrderId?.Trade?.ClientId}");
                             continue;
@@ -159,8 +157,6 @@ namespace Lykke.Job.OperationsCache.Services.OperationsHistory
                         {
                             if (_noAssetPairs.TryAdd(marketOrder.AssetPairId, DateTime.UtcNow.Add(_noAssetsExpirePeriod)))
                             {
-                                _noAssetPairs.Add(marketOrder.AssetPairId, DateTime.UtcNow.Add(_noAssetsExpirePeriod));
-                                
                                 await _log.WriteWarningAsync(nameof(OperationsHistoryRepoReader), nameof(AddMarketOrdersInfo),
                                 $"Unable to find assetPair in dictionary {marketOrder?.AssetPairId} for client {tradeWithOrderId?.Trade?.ClientId}");
                                 continue;
