@@ -11,6 +11,6 @@
     <Folder Include="Exchange\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lykke.AzureStorage" Version="5.0.1" />
+    <PackageReference Include="Lykke.AzureStorage" Version="8.4.1" />
   </ItemGroup>
 </Project>

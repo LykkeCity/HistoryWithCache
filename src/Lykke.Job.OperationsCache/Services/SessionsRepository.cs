@@ -2,27 +2,24 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AzureStorage;
+using JetBrains.Annotations;
+using Lykke.Service.Session.Client;
 
 namespace Lykke.Job.OperationsCache.Services
 {
+    [UsedImplicitly]
     public class ClientSessionsRepository
     {
-        private const string ByTokenPartitionKey = "Sess";
-        private readonly INoSQLTableStorage<ClientSessionEntity> _tableStorage;
+        private readonly IClientSessionsClient _sessionsClient;
 
-        public ClientSessionsRepository(INoSQLTableStorage<ClientSessionEntity> tableStorage)
+        public ClientSessionsRepository(IClientSessionsClient sessionsClient)
         {
-            _tableStorage = tableStorage;
-        }
-
-        public async Task<IEnumerable<ClientSessionEntity>> GetAll()
-        {
-            return await _tableStorage.GetDataAsync(ByTokenPartitionKey);
+            _sessionsClient = sessionsClient;
         }
 
         public async Task<IEnumerable<string>> GetClientsIds()
         {
-            return (await _tableStorage.GetDataAsync(ByTokenPartitionKey)).Select(x => x.ClientId);
+            return await _sessionsClient.GetActiveClientIdsAsync();
         }
 
     }
