@@ -82,10 +82,6 @@ namespace Lykke.Job.OperationsCache.Modules
                 .As<IHistoryCache>()
                 .SingleInstance();
 
-            builder.RegisterType<ClientSessionsRepository>()
-                .AsSelf()
-                .SingleInstance();
-
             builder.RegisterType<OperationsHistoryRepoReader>()
                 .As<IOperationsHistoryReader>()
                 .SingleInstance();
@@ -200,11 +196,11 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.Register(x =>
             {
-                var sessionsRepository = x.Resolve<IComponentContext>().Resolve<ClientSessionsRepository>();
+                var sessionsClient = x.Resolve<IComponentContext>().Resolve<IClientSessionsClient>();
 
                 return new CachedSessionsDictionary
                 (
-                    async () => (await sessionsRepository.GetClientsIds()).Distinct().ToDictionary(itm => itm)
+                    async () => (await sessionsClient.GetActiveClientIdsAsync()).Distinct().ToDictionary(itm => itm)
                 );
 
             }).SingleInstance();
