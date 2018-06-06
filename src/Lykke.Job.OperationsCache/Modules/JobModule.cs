@@ -24,6 +24,9 @@ using System.Linq;
 using Common;
 using Lykke.Job.OperationsCache.Handlers;
 using Lykke.Service.Assets.Client.Models;
+using Lykke.Service.Session.Client;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Redis;
 using AppSettings = Lykke.Job.OperationsCache.Settings.AppSettings;
 
 namespace Lykke.Job.OperationsCache.Modules
@@ -81,13 +84,6 @@ namespace Lykke.Job.OperationsCache.Modules
                 .As<IHistoryCache>()
                 .SingleInstance();
 
-            builder.RegisterInstance(
-                    AzureTableStorage<ClientSessionEntity>.Create(
-                        _settings.ConnectionString(x => x.SessionSettings.Sessions.ConnectionString),
-                        _settings.CurrentValue.SessionSettings.Sessions.TableName,
-                        _log))
-                .As<INoSQLTableStorage<ClientSessionEntity>>().SingleInstance();
-
             builder.RegisterType<ClientSessionsRepository>()
                 .AsSelf()
                 .SingleInstance();
@@ -98,6 +94,8 @@ namespace Lykke.Job.OperationsCache.Modules
 
             builder.RegisterInstance<IAssetsService>(
                 new AssetsService(new Uri(_settings.CurrentValue.AssetsServiceClient.ServiceUrl)));
+
+            builder.RegisterClientSessionClient(_settings.CurrentValue.SessionServiceClient.SessionServiceUrl, _log);
 
             RegisterRepositories(builder);
 
